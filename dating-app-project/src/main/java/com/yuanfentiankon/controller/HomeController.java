@@ -8,7 +8,7 @@ public class HomeController {
     // 首页跳转到登录页
     @GetMapping("/")
     public String home() {
-        return "redirect:/login";
+        return "index";
     }
 
     // 登录页
