@@ -18,8 +18,8 @@
             top: 0;
             left: 0;
             background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             overflow: hidden;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
@@ -45,79 +45,88 @@
             object-fit: cover;
         }
         .match-card-content {
-            padding: 15px;
+            padding: 20px;
         }
         .match-card-name {
             font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: #333;
         }
         .match-card-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         .match-card-location, .match-card-age, .match-card-height {
             display: flex;
             align-items: center;
-            color: #6c757d;
+            color: #666;
+            font-size: 0.9rem;
         }
         .match-card-location i, .match-card-age i, .match-card-height i {
             margin-right: 5px;
+            color: #007bff;
         }
         .match-card-tags {
-            margin-top: 10px;
+            margin-top: 15px;
             display: flex;
             flex-wrap: wrap;
         }
         .match-card-tag {
             font-size: 0.8rem;
-            padding: 2px 8px;
-            background-color: #f1f1f1;
-            border-radius: 12px;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            color: #6c757d;
+            padding: 4px 12px;
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            color: #666;
+            border: 1px solid #e9ecef;
         }
         .match-card-score {
             position: absolute;
             top: 15px;
             right: 15px;
-            background-color: rgba(0,123,255,0.8);
+            background-color: rgba(0,123,255,0.9);
             color: white;
-            border-radius: 15px;
-            padding: 3px 10px;
+            border-radius: 20px;
+            padding: 4px 12px;
             font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .match-card-actions {
             display: flex;
             justify-content: space-around;
             align-items: center;
-            margin-top: 20px;
+            margin-top: 25px;
+            padding: 0 20px;
         }
         .match-action-btn {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: all 0.2s ease;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         .match-action-btn:hover {
             transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
         .dislike-btn {
-            background-color: #f8f9fa;
+            background-color: white;
             color: #dc3545;
         }
         .like-btn {
-            background-color: #f8f9fa;
+            background-color: white;
             color: #28a745;
         }
         .superlike-btn {
-            background-color: #f8f9fa;
+            background-color: white;
             color: #007bff;
         }
         .match-cards-empty {
@@ -127,46 +136,88 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            background-color: white;
+            border-radius: 15px;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         .match-cards-empty i {
-            font-size: 3rem;
-            color: #d1d1d1;
-            margin-bottom: 20px;
+            font-size: 3.5rem;
+            color: #007bff;
+            margin-bottom: 25px;
+        }
+        .match-cards-empty h4 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .match-cards-empty p {
+            color: #666;
+            margin-bottom: 25px;
         }
         .mode-switch {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-align: center;
+        }
+        .mode-switch .btn-group {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        .mode-switch .btn {
+            padding: 10px 25px;
+            font-weight: 500;
+            border: none;
+        }
+        .mode-switch .btn.active {
+            background-color: #007bff;
+            color: white;
         }
         .match-list-item {
             display: flex;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .match-list-item:hover {
+            transform: translateY(-2px);
         }
         .match-list-img {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             object-fit: cover;
         }
         .match-list-content {
             flex: 1;
-            padding: 15px;
+            padding: 20px;
             position: relative;
         }
         .match-list-actions {
             display: flex;
             position: absolute;
-            right: 15px;
-            bottom: 15px;
+            right: 20px;
+            bottom: 20px;
         }
         .match-list-actions button {
-            margin-left: 5px;
+            margin-left: 8px;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .match-list-actions .btn-outline-danger:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        .match-list-actions .btn-outline-success:hover {
+            background-color: #28a745;
+            color: white;
+        }
+        .match-list-actions .btn-outline-info:hover {
+            background-color: #17a2b8;
+            color: white;
         }
     </style>
 </head>
