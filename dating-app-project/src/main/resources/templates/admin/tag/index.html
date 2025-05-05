@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>标签管理</title>
+    <style>
+        .tag-category-card {
+            margin-bottom: 20px;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tag-list {
+            margin-top: 15px;
+        }
+        .tag-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        .tag-name {
+            display: flex;
+            align-items: center;
+        }
+        .tag-icon {
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+        .tag-actions button {
+            margin-left: 5px;
+        }
+        .tag-count {
+            background-color: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">标签管理</h2>
+            <div>
+                <a th:href="@{/admin/tags/categories/create}" class="btn btn-outline-primary mr-2">
+                    <i class="fas fa-folder-plus"></i> 添加类别
+                </a>
+                <a th:href="@{/admin/tags/create}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> 添加标签
+                </a>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="搜索标签..." id="tagSearchInput">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="tagSearchButton">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary active" id="viewByCategory">
+                        <i class="fas fa-th-large"></i> 按类别查看
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewByPopularity">
+                        <i class="fas fa-fire"></i> 按热度查看
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 按类别视图 -->
+        <div id="categoryView">
+            <div th:each="category : ${categories}" class="tag-category-card card">
+                <div class="card-header category-header">
+                    <h5 class="mb-0" th:text="${category.name}">类别名称</h5>
+                    <div>
+                        <span class="badge badge-secondary" th:text="${category.tags.size()} + " 个标签"">0 个标签</span>
+                        <div class="btn-group btn-group-sm ml-2">
+                            <a th:href="@{/admin/tags/categories/edit/{id}(id=${category.id})}" class="btn btn-outline-secondary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <button type="button" class="btn btn-outline-danger" 
+                                    th:onclick=""confirmDeleteCategory(" + ${category.id} + ")"">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(category.tags)}" class="text-center text-muted py-3">
+                        此类别下暂无标签
+                    </div>
+                    
+                    <div th:if="${not #lists.isEmpty(category.tags)}" class="tag-list">
+                        <div th:each="tag : ${category.tags}" class="tag-item">
+                            <div class="tag-name">
+                                <div class="tag-icon">
+                                    <i th:class="${tag.icon != null ? tag.icon : "fas fa-tag"}"></i>
+                                </div>
+                                <span th:text="${tag.name}">标签名称</span>
+                                <span class="tag-count" th:text="${tag.useCount}">0</span>
+                            </div>
+                            <div class="tag-actions">
+                                <a th:href="@{/admin/tags/edit/{id}(id=${tag.id})}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        th:onclick=""confirmDeleteTag(" + ${tag.id} + ")"">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 按热度视图 -->
+        <div id="popularityView" style="display: none;">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">标签热度排行</h5>
+                </div>
+                <div class="card-body">
+                    <div class="tag-list">
+                        <div th:each="tag : ${allTags}" class="tag-item">
+                            <div class="tag-name">
+                                <div class="tag-icon">
+                                    <i th:class="${tag.icon != null ? tag.icon : "fas fa-tag"}"></i>
+                                </div>
+                                <span th:text="${tag.name}">标签名称</span>
+                                <span class="badge badge-info ml-2" th:text="${tag.category.name}">类别</span>
+                                <span class="tag-count" th:text="${tag.useCount}">0</span>
+                            </div>
+                            <div class="tag-actions">
+                                <a th:href="@{/admin/tags/edit/{id}(id=${tag.id})}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" 
+                                        th:onclick=""confirmDeleteTag(" + ${tag.id} + ")"">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 删除确认模态框 -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">确认删除</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="deleteModalBody">
+                        您确定要删除此项吗？此操作无法撤销。
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <a href="#" id="confirmDeleteBtn" class="btn btn-danger">确认删除</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 视图切换
+                $("#viewByCategory").click(function() {
+                    $(this).addClass("active");
+                    $("#viewByPopularity").removeClass("active");
+                    $("#categoryView").show();
+                    $("#popularityView").hide();
+                });
+                
+                $("#viewByPopularity").click(function() {
+                    $(this).addClass("active");
+                    $("#viewByCategory").removeClass("active");
+                    $("#categoryView").hide();
+                    $("#popularityView").show();
+                });
+                
+                // 标签搜索
+                $("#tagSearchInput").on("input", function() {
+                    var searchText = $(this).val().toLowerCase();
+                    
+                    if (searchText.length > 0) {
+                        $(".tag-item").each(function() {
+                            var tagName = $(this).find(".tag-name span:first").text().toLowerCase();
+                            if (tagName.indexOf(searchText) > -1) {
+                                $(this).show();
+                                $(this).closest(".tag-category-card").show();
+                            } else {
+                                $(this).hide();
+                            }
+                        });
+                        
+                        // 隐藏没有匹配标签的类别
+                        $(".tag-category-card").each(function() {
+                            if ($(this).find(".tag-item:visible").length === 0) {
+                                $(this).hide();
+                            }
+                        });
+                    } else {
+                        $(".tag-category-card").show();
+                        $(".tag-item").show();
+                    }
+                });
+            });
+            
+            // 确认删除类别
+            function confirmDeleteCategory(categoryId) {
+                $("#deleteModalBody").text("您确定要删除此类别吗？此操作将删除该类别下的所有标签，且无法撤销。");
+                $("#confirmDeleteBtn").attr("href", "/admin/tags/categories/delete/" + categoryId);
+                $("#deleteModal").modal("show");
+            }
+            
+            // 确认删除标签
+            function confirmDeleteTag(tagId) {
+                $("#deleteModalBody").text("您确定要删除此标签吗？此操作无法撤销。");
+                $("#confirmDeleteBtn").attr("href", "/admin/tags/delete/" + tagId);
+                $("#deleteModal").modal("show");
+            }
+        </script>
+    </th:block>
+</body>
+</html>

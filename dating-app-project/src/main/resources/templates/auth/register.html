@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>用户注册</title>
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        .register-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-heading {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .login-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center mt-5 mb-5">
+            <div class="col-md-8">
+                <div class="register-container">
+                    <div class="register-logo">
+                        <img th:src="@{/images/logo.png}" alt="缘分天空" height="80">
+                    </div>
+                    <h2 class="form-heading">用户注册</h2>
+                    
+                    <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+                    
+                    <form th:action="@{/register}" method="post" th:object="${userRegistrationDTO}">
+                        <div class="form-group">
+                            <label for="username">用户名</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors("username")}" th:errors="*{username}"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">电子邮箱</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors("email")}" th:errors="*{email}"></small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">手机号码</label>
+                            <input type="text" class="form-control" id="phone" th:field="*{phone}">
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors("phone")}" th:errors="*{phone}"></small>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="password">密码</label>
+                                <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("password")}" th:errors="*{password}"></small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="confirmPassword">确认密码</label>
+                                <input type="password" class="form-control" id="confirmPassword" th:field="*{confirmPassword}" required>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("confirmPassword")}" th:errors="*{confirmPassword}"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="gender">性别</label>
+                                <select class="form-control" id="gender" th:field="*{gender}" required>
+                                    <option value="">请选择</option>
+                                    <option value="male">男</option>
+                                    <option value="female">女</option>
+                                </select>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("gender")}" th:errors="*{gender}"></small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="birthday">出生日期</label>
+                                <input type="date" class="form-control" id="birthday" th:field="*{birthday}" required>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("birthday")}" th:errors="*{birthday}"></small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="location">所在地区</label>
+                            <input type="text" class="form-control" id="location" th:field="*{location}">
+                            <small class="form-text text-danger" th:if="${#fields.hasErrors("location")}" th:errors="*{location}"></small>
+                        </div>
+                        
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="agreement" name="agreement" required>
+                            <label class="form-check-label" for="agreement">我已阅读并同意<a href="#" data-toggle="modal" data-target="#termsModal">用户协议</a>和<a href="#" data-toggle="modal" data-target="#privacyModal">隐私政策</a></label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">注册</button>
+                    </form>
+                    
+                    <div class="login-link">
+                        <p>已有账号？ <a th:href="@{/login}">立即登录</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 用户协议模态框 -->
+        <div class="modal fade" id="termsModal" tabindex="-1" role="dialog" aria-labelledby="termsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="termsModalLabel">用户协议</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>这是用户协议内容...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 隐私政策模态框 -->
+        <div class="modal fade" id="privacyModal" tabindex="-1" role="dialog" aria-labelledby="privacyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="privacyModalLabel">隐私政策</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>这是隐私政策内容...</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

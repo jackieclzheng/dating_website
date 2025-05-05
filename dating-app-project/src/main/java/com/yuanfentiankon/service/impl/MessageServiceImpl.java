@@ -41,20 +41,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Object> findContactsByUserId(Long userId) {
-        // 获取发送给我的联系人
-        List<Object> senders = messageRepository.findSendersByReceiverId(userId);
-        // 获取我发送给的联系人
-        List<Object> receivers = messageRepository.findReceiversBySenderId(userId);
+    // public List<Object> findContactsByUserId(Long userId) {
+    //     // 获取发送给我的联系人
+    //     List<Object> senders = messageRepository.findSendersByReceiverId(userId);
+    //     // 获取我发送给的联系人
+    //     List<Object> receivers = messageRepository.findReceiversBySenderId(userId);
         
-        // 使用 Set 去重
-        Set<Object> contacts = new HashSet<>();
-        contacts.addAll(senders);
-        contacts.addAll(receivers);
+    //     // 使用 Set 去重
+    //     Set<Object> contacts = new HashSet<>();
+    //     contacts.addAll(senders);
+    //     contacts.addAll(receivers);
         
-        // 转换回 List 返回
-        return new ArrayList<>(contacts);
-    }
+    //     // 转换回 List 返回
+    //     return new ArrayList<>(contacts);
+    // }
 
     @Override
     @Transactional

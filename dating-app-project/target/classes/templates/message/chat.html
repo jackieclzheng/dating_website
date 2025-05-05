@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>聊天</title>
+    <style>
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .chat-header {
+            padding: 15px;
+            background-color: white;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+        }
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .chat-user-info {
+            flex: 1;
+        }
+        .chat-username {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .chat-status {
+            font-size: 0.8rem;
+            color: #28a745;
+        }
+        .chat-actions {
+            display: flex;
+        }
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 1.2rem;
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .message {
+            max-width: 70%;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message.sent {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+        .message.received {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            position: relative;
+        }
+        .message.sent .message-content {
+            background-color: #007bff;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+        .message.received .message-content {
+            background-color: white;
+            border-bottom-left-radius: 5px;
+        }
+        .message-time {
+            font-size: 0.7rem;
+            color: #6c757d;
+            margin-top: 5px;
+            align-self: flex-end;
+        }
+        .message.sent .message-time {
+            text-align: right;
+        }
+        .message-date-divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .message-date-divider:before {
+            content: \"\";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+        .message-date {
+            display: inline-block;
+            background-color: #f8f9fa;
+            padding: 0 10px;
+            font-size: 0.8rem;
+            color: #6c757d;
+            position: relative;
+            z-index: 2;
+        }
+        .chat-input {
+            padding: 15px;
+            background-color: white;
+            border-top: 1px solid #e9ecef;
+        }
+        .input-group {
+            position: relative;
+        }
+        .emoji-btn {
+            position: absolute;
+            right: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .emoji-picker {
+            position: absolute;
+            bottom: 50px;
+            right: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+        }
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            padding: 10px;
+        }
+        .emoji-item {
+            font-size: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .emoji-item:hover {
+            transform: scale(1.2);
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+            color: #6c757d;
+            font-size: 0.8rem;
+        }
+        .typing-dots {
+            display: flex;
+            margin-left: 5px;
+        }
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #6c757d;
+            margin: 0 2px;
+            animation: typingAnimation 1.5s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typingAnimation {
+            0% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-2px); }
+            100% { opacity: 0.3; transform: translateY(0); }
+        }
+        .chat-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .chat-empty i {
+            font-size: 3rem;
+            color: #d1d1d1;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="chat-container">
+            <!-- 聊天头部 -->
+            <div class="chat-header">
+                <a th:href="@{/message}" class="mr-2 d-md-none">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <img th:src="${targetUser.avatar != null ? targetUser.avatar : \"/images/default-avatar.png\"}" 
+                     class="chat-avatar" alt="头像">
+                <div class="chat-user-info">
+                    <div class="chat-username" th:text="${targetUser.username}">用户名</div>
+                    <div class="chat-status">
+                        <i class="fas fa-circle"></i> 在线
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <a th:href="@{/user/profile/{id}(id=${targetUser.id})}" class="chat-action-btn" title="查看资料">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <button type="button" class="chat-action-btn" title="更多选项" data-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="#" id="clearChatBtn">
+                            <i class="fas fa-trash"></i> 清空聊天记录
+                        </a>
+                        <a class="dropdown-item" href="#" id="blockUserBtn">
+                            <i class="fas fa-ban"></i> 屏蔽此用户
+                        </a>
+                        <a class="dropdown-item" href="#" id="reportUserBtn">
+                            <i class="fas fa-flag"></i> 举报此用户
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 聊天消息区域 -->
+            <div class="chat-messages" id="chatMessages">
+                <!-- 无消息时显示 -->
+                <div th:if="${#lists.isEmpty(messages)}" class="chat-empty">
+                    <i class="far fa-comments"></i>
+                    <h4>还没有聊天记录</h4>
+                    <p class="text-muted">发送一条消息，开始对话吧！</p>
+                </div>
+                
+                <!-- 消息内容 -->
+                <div th:if="${not #lists.isEmpty(messages)}">
+                    <!-- 日期分隔线 -->
+                    <div class="message-date-divider" th:with="firstDate=${#temporals.format(messages[0].createdAt, \"yyyy-MM-dd\")}">
+                        <span class="message-date" th:text="${firstDate}">2025-05-01</span>
+                    </div>
+                    
+                    <th:block th:each="message, stat : ${messages}">
+                        <!-- 如果日期发生变化，添加新的日期分隔线 -->
+                        <div class="message-date-divider" th:if="${stat.index > 0 && #temporals.format(message.createdAt, \"yyyy-MM-dd\") != #temporals.format(messages[stat.index-1].createdAt, \"yyyy-MM-dd\")}">
+                            <span class="message-date" th:text="${#temporals.format(message.createdAt, \"yyyy-MM-dd\")}">2025-05-02</span>
+                        </div>
+                        
+                        <!-- 消息内容 -->
+                        <div class="message" th:classappend="${message.sender.id == currentUserId ? \"sent\" : \"received\"}">
+                            <div class="message-content" th:text="${message.content}">消息内容</div>
+                            <div class="message-time" th:text="${#temporals.format(message.createdAt, \"HH:mm\")}">14:30</div>
+                        </div>
+                    </th:block>
+                </div>
+                
+                <!-- 对方正在输入提示 -->
+                <div class="typing-indicator" id="typingIndicator" style="display: none;">
+                    <span th:text="${targetUser.username}">用户名</span> 正在输入
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 输入区域 -->
+            <div class="chat-input">
+                <form id="messageForm" th:action="@{/message/send}" method="post">
+                    <input type="hidden" name="receiverId" th:value="${targetUser.id}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="content" id="messageInput" 
+                               placeholder="输入消息..." required autocomplete="off">
+                        <button type="button" class="emoji-btn" id="emojiBtn">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- 表情选择器 -->
+                <div class="emoji-picker" id="emojiPicker">
+                    <div class="emoji-grid">
+                        <div class="emoji-item">😊</div>
+                        <div class="emoji-item">😂</div>
+                        <div class="emoji-item">😍</div>
+                        <div class="emoji-item">🥰</div>
+                        <div class="emoji-item">😘</div>
+                        <div class="emoji-item">😜</div>
+                        <div class="emoji-item">😎</div>
+                        <div class="emoji-item">🥳</div>
+                        <div class="emoji-item">🤔</div>
+                        <div class="emoji-item">😇</div>
+                        <div class="emoji-item">😉</div>
+                        <div class="emoji-item">🙄</div>
+                        <div class="emoji-item">😭</div>
+                        <div class="emoji-item">😱</div>
+                        <div class="emoji-item">👍</div>
+                        <div class="emoji-item">👏</div>
+                        <div class="emoji-item">🙏</div>
+                        <div class="emoji-item">❤️</div>
+                        <div class="emoji-item">💕</div>
+                        <div class="emoji-item">💔</div>
+                        <div class="emoji-item">🌹</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 滚动到最新消息
+                scrollToBottom();
+                
+                // 表情选择器
+                $(\"#emojiBtn\").click(function() {
+                    $(\"#emojiPicker\").toggle();
+                });
+                
+                $(\".emoji-item\").click(function() {
+                    var emoji = $(this).text();
+                    var messageInput = $(\"#messageInput\");
+                    messageInput.val(messageInput.val() + emoji);
+                    $(\"#emojiPicker\").hide();
+                    messageInput.focus();
+                });
+                
+                // 点击文档其他区域关闭表情选择器
+                $(document).click(function(e) {
+                    if (!$(e.target).closest(\"#emojiPicker, #emojiBtn\").length) {
+                        $(\"#emojiPicker\").hide();
+                    }
+                });
+                
+                // 消息表单提交
+                $(\"#messageForm\").submit(function(e) {
+                    e.preventDefault();
+                    
+                    var form = $(this);
+                    var url = form.attr(\"action\");
+                    var content = $(\"#messageInput\").val().trim();
+                    
+                    if (content) {
+                        $.ajax({
+                            type: \"POST\",
+                            url: url,
+                            data: form.serialize(),
+                            success: function(response) {
+                                if (response.success) {
+                                    // 添加新消息到聊天区域
+                                    var currentTime = new Date();
+                                    var formattedTime = formatTime(currentTime);
+                                    
+                                    var newMessage = 
+                                        \"<div class=\"message sent\">" +
+                                        \"<div class=\"message-content\">" + content + \"</div>" +
+                                        \"<div class=\"message-time\">" + formattedTime + \"</div>" +
+                                        \"</div>\";
+                                    
+                                    // 如果是首条消息，移除空状态
+                                    if ($(\".chat-empty\").length) {
+                                        $(\".chat-empty\").remove();
+                                        
+                                        // 添加日期分隔线
+                                        var formattedDate = formatDate(currentTime);
+                                        var dateDivider = 
+                                            \"<div class=\"message-date-divider\">" +
+                                            \"<span class=\"message-date\">" + formattedDate + \"</span>" +
+                                            \"</div>\";
+                                        
+                                        $(\"#chatMessages\").append(dateDivider);
+                                    }
+                                    
+                                    $(\"#chatMessages\").append(newMessage);
+                                    scrollToBottom();
+                                    
+                                    // 清空输入框
+                                    $(\"#messageInput\").val(\"\");
+                                }
+                            }
+                        });
+                    }
+                });
+                
+                // 获取并显示新消息
+                function fetchNewMessages() {
+                    var targetUserId = $(\"input[name=\"receiverId\"]\").val();
+                    var lastMessageTime = $(\".message\").last().find(\".message-time\").data(\"timestamp\");
+                    
+                    $.ajax({
+                        url: \"/message/new\",
+                        type: \"GET\",
+                        data: {
+                            targetId: targetUserId,
+                            lastTime: lastMessageTime
+                        },
+                        success: function(response) {
+                            if (response.messages && response.messages.length > 0) {
+                                // 添加新消息
+                                response.messages.forEach(function(message) {
+                                    var newMessage = 
+                                        \"<div class=\"message received\">" +
+                                        \"<div class=\"message-content\">" + message.content + \"</div>" +
+                                        \"<div class=\"message-time\" data-timestamp=\"" + message.timestamp + \"\">" + 
+                                        message.formattedTime + \"</div>" +
+                                        \"</div>\";
+                                    
+                                    $(\"#chatMessages\").append(newMessage);
+                                });
+                                
+                                scrollToBottom();
+                            }
+                            
+                            // 更新对方输入状态
+                            if (response.isTyping) {
+                                $(\"#typingIndicator\").show();
+                            } else {
+                                $(\"#typingIndicator\").hide();
+                            }
+                        }
+                    });
+                }
+                
+                // 设置定时获取新消息
+                setInterval(fetchNewMessages, 3000);
+                
+                // 滚动到底部函数
+                function scrollToBottom() {
+                    var chatMessages = $(\"#chatMessages\");
+                    chatMessages.scrollTop(chatMessages.prop(\"scrollHeight\"));
+                }
+                
+                // 格式化时间 (HH:mm)
+                function formatTime(date) {
+                    var hours = date.getHours().toString().padStart(2, \"0\");
+                    var minutes = date.getMinutes().toString().padStart(2, \"0\");
+                    return hours + \":\" + minutes;
+                }
+                
+                // 格式化日期 (yyyy-MM-dd)
+                function formatDate(date) {
+                    var year = date.getFullYear();
+                    var month = (date.getMonth() + 1).toString().padStart(2, \"0\");
+                    var day = date.getDate().toString().padStart(2, \"0\");
+                    return year + \"-\" + month + \"-\" + day;
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html>

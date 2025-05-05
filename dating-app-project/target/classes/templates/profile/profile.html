@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>个人资料</title>
+    <style>
+        .profile-card {
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .profile-header {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .avatar-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .avatar-edit {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .profile-info {
+            padding: 20px;
+        }
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .nav-tabs .nav-link {
+            border: none;
+        }
+        .nav-tabs .nav-link.active {
+            border-bottom: 2px solid #007bff;
+            color: #007bff;
+        }
+        .tab-content {
+            padding: 20px 0;
+        }
+        .info-group {
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .interest-tag {
+            display: inline-block;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 5px;
+        }
+        .gallery-item {
+            margin-bottom: 15px;
+        }
+        .gallery-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row">
+            <div class="col-md-4">
+                <!-- 个人资料卡片 -->
+                <div class="profile-card mb-4">
+                    <div class="profile-header">
+                        <div class="avatar-container">
+                            <img th:src="${user.avatar != null ? user.avatar : '/images/default-avatar.png'}" alt="头像" class="avatar">
+                            <div class="avatar-edit" data-toggle="modal" data-target="#avatarModal">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <h4 class="mt-3" th:text="${user.username}">用户名</h4>
+                        <p th:text="${user.bio != null ? user.bio : '这个人很懒，什么都没写...'}">个人简介</p>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" th:text="${matchCount}">0</div>
+                            <div class="stat-label">匹配</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" th:text="${visitCount}">0</div>
+                            <div class="stat-label">访客</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" th:text="${likeCount}">0</div>
+                            <div class="stat-label">喜欢</div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-info">
+                        <a th:href="@{/user/profile/edit}" class="btn btn-outline-primary btn-block">
+                            <i class="fas fa-edit"></i> 编辑资料
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 标签卡片 -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">我的标签</h5>
+                        <a th:href="@{/user/tags}" class="btn btn-sm btn-outline-primary">管理</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${#lists.isEmpty(userTags)}">
+                            <p class="text-center text-muted">您还没有添加任何标签</p>
+                        </div>
+                        <div th:if="${not #lists.isEmpty(userTags)}">
+                            <span th:each="userTag : ${userTags}" class="interest-tag">
+                                <i class="fas fa-tag"></i> <span th:text="${userTag.tag.name}">标签名称</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <!-- 资料选项卡 -->
+                <div class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">基本资料</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="photos-tab" data-toggle="tab" href="#photos" role="tab" aria-controls="photos" aria-selected="false">相册</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="preferences-tab" data-toggle="tab" href="#preferences" role="tab" aria-controls="preferences" aria-selected="false">匹配偏好</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content" id="profileTabsContent">
+                            <!-- 基本资料选项卡 -->
+                            <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">年龄</div>
+                                            <div th:text="${user.age != null ? user.age : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">性别</div>
+                                            <div th:text="${user.gender != null ? (user.gender == 'male' ? '男' : '女') : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">身高</div>
+                                            <div th:text="${user.height != null ? user.height + 'cm' : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">所在地</div>
+                                            <div th:text="${user.location != null ? user.location : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">学历</div>
+                                            <div th:text="${user.education != null ? user.education : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">职业</div>
+                                            <div th:text="${user.occupation != null ? user.occupation : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">婚姻状况</div>
+                                            <div th:text="${user.maritalStatus != null ? user.maritalStatus : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">有无子女</div>
+                                            <div th:text="${user.hasChildren != null ? (user.hasChildren ? '有' : '无') : '未填写'}">未填写</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 相册选项卡 -->
+                            <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>我的相册</h5>
+                                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadPhotoModal">
+                                        <i class="fas fa-plus"></i> 上传照片
+                                    </button>
+                                </div>
+                                <div class="row">
+                                    <div th:if="${#lists.isEmpty(userPhotos)}">
+                                        <p class="text-center text-muted">您还没有上传任何照片</p>
+                                    </div>
+                                    <div class="col-md-4 gallery-item" th:each="photo : ${userPhotos}">
+                                        <img th:src="${photo.url}" alt="相册照片" class="gallery-img" data-toggle="modal" data-target="#viewPhotoModal" th:data-photo-url="${photo.url}">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 匹配偏好选项卡 -->
+                            <div class="tab-pane fade" id="preferences" role="tabpanel" aria-labelledby="preferences-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>我的匹配偏好</h5>
+                                    <a th:href="@{/user/preferences/edit}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> 编辑偏好
+                                    </a>
+                                </div>
+                                <div th:if="${preference == null}">
+                                    <p class="text-center text-muted">您还没有设置匹配偏好</p>
+                                </div>
+                                <div th:if="${preference != null}">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-group">
+                                                <div class="info-label">年龄范围</div>
+                                                <div th:text="${preference.minAge} + ' - ' + ${preference.maxAge} + ' 岁'"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-group">
+                                                <div class="info-label">身高范围</div>
+                                                <div th:text="${preference.minHeight} + ' - ' + ${preference.maxHeight} + ' cm'"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="info-group">
+                                                <div class="info-label">期望性别</div>
+                                                <div th:text="${preference.genderPreference == 'male' ? '男' : (preference.genderPreference == 'female' ? '女' : '不限')}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="info-group">
+                                                <div class="info-label">期望所在地</div>
+                                                <div th:text="${preference.locationPreference != null ? preference.locationPreference : '不限'}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 头像上传模态框 -->
+        <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/user/avatar/upload}" method="post" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="avatarModalLabel">上传头像</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="avatarFile">选择图片文件</label>
+                                <input type="file" class="form-control-file" id="avatarFile" name="file" accept="image/*" required>
+                            </div>
+                            <div class="text-center mt-3">
+                                <img id="avatarPreview" src="#" alt="头像预览" style="max-width: 200px; max-height: 200px; display: none;">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                            <button type="submit" class="btn btn-primary">上传</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 照片上传模态框 -->
+        <div class="modal fade" id="uploadPhotoModal" tabindex="-1" role="dialog" aria-labelledby="uploadPhotoModalLabel" aria-hidden="true">
+            <!-- ... (内容与头像上传类似) ... -->
+        </div>
+
+        <!-- 查看照片模态框 -->
+        <div class="modal fade" id="viewPhotoModal" tabindex="-1" role="dialog" aria-labelledby="viewPhotoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewPhotoModalLabel">查看照片</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalPhotoView" src="#" alt="照片" style="max-width: 100%; max-height: 70vh;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script>
+            // 头像预览
+            $('#avatarFile').change(function(){
+                let reader = new FileReader();
+                reader.onload = (e) => { 
+                    $('#avatarPreview').attr('src', e.target.result).show(); 
+                }
+                reader.readAsDataURL(this.files[0]); 
+            });
+
+            // 查看照片模态框
+            $('#viewPhotoModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var photoUrl = button.data('photo-url') // Extract info from data-* attributes
+                var modal = $(this)
+                modal.find('#modalPhotoView').attr('src', photoUrl)
+            })
+        </script>
+    </th:block>
+</body>
+</html>
+
+                                            未填写
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-group">
+                                    <div class="info-label">个人介绍</div>
+                                    <div th:text="${user.bio != null ? user.bio : '这个人很懒，什么都没写...'}">未填写</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 相册选项卡 -->
+                            <div class="tab-pane fade" id="photos" role="tabpanel" aria-labelledby="photos-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>我的相册</h5>
+                                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#uploadModal">
+                                        <i class="fas fa-upload"></i> 上传照片
+                                    </button>
+                                </div>
+                                
+                                <div th:if="${#lists.isEmpty(photos)}">
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-images fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted">您的相册还没有照片</p>
+                                        <button class="btn btn-outline-primary" data-toggle="modal" data-target="#uploadModal">
+                                            <i class="fas fa-upload"></i> 上传照片
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="row" th:if="${not #lists.isEmpty(photos)}">
+                                    <div class="col-md-4 col-sm-6 gallery-item" th:each="photo : ${photos}">
+                                        <img th:src="${photo.url}" alt="照片" class="gallery-img" 
+                                             onclick="showPhotoModal(this.src)">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 匹配偏好选项卡 -->
+                            <div class="tab-pane fade" id="preferences" role="tabpanel" aria-labelledby="preferences-tab">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>匹配偏好设置</h5>
+                                    <a th:href="@{/user/preferences/edit}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> 编辑
+                                    </a>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">年龄范围</div>
+                                            <div th:text="${preferences != null ? preferences.minAge + ' - ' + preferences.maxAge + '岁' : '未设置'}">未设置</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">身高范围</div>
+                                            <div th:text="${preferences != null ? preferences.minHeight + ' - ' + preferences.maxHeight + 'cm' : '未设置'}">未设置</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">地区偏好</div>
+                                            <div th:text="${preferences != null && preferences.locationPreference != null ? preferences.locationPreference : '不限'}">不限</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="info-group">
+                                            <div class="info-label">学历要求</div>
+                                            <div th:text="${preferences != null && preferences.educationPreference != null ? preferences.educationPreference : '不限'}">不限</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 上传头像模态框 -->
+        <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="avatarModalLabel">更换头像</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/user/avatar/upload}" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="avatarFile">选择图片</label>
+                                <input type="file" class="form-control-file" id="avatarFile" name="avatarFile" accept="image/*" required>
+                                <small class="form-text text-muted">支持JPG、PNG格式，文件大小不超过2MB</small>
+                            </div>
+                            <div class="text-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">上传</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 上传照片模态框 -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="uploadModalLabel">上传照片</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/user/photo/upload}" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="photoFile">选择图片</label>
+                                <input type="file" class="form-control-file" id="photoFile" name="photoFile" accept="image/*" required>
+                                <small class="form-text text-muted">支持JPG、PNG格式，文件大小不超过5MB</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="photoDescription">照片描述</label>
+                                <input type="text" class="form-control" id="photoDescription" name="description" placeholder="可选">
+                            </div>
+                            <div class="text-right">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">上传</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 照片查看模态框 -->
+        <div class="modal fade" id="photoViewModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body p-0">
+                        <button type="button" class="close position-absolute" style="right: 10px; top: 10px; z-index: 1000; color: white; text-shadow: 0 0 3px rgba(0,0,0,0.5);" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <img id="modalPhotoImg" src="" alt="照片" style="width: 100%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            function showPhotoModal(src) {
+                document.getElementById('modalPhotoImg').src = src;
+                $('#photoViewModal').modal('show');
+            }
+        </script>
+    </th:block>
+</body>
+</html>
