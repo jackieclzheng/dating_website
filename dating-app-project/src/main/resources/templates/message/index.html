@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>我的消息</title>
+    <style>
+        .contacts-list {
+            overflow-y: auto;
+            max-height: 600px;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .contact-item:hover {
+            background-color: #f8f9fa;
+        }
+        .contact-item.active {
+            background-color: #e9ecef;
+        }
+        .contact-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .contact-info {
+            flex: 1;
+        }
+        .contact-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .contact-preview {
+            font-size: 0.85rem;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .contact-meta {
+            text-align: right;
+            min-width: 60px;
+        }
+        .contact-time {
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        .unread-badge {
+            background-color: #007bff;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        .contacts-empty {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .contacts-empty i {
+            font-size: 3rem;
+            color: #d1d1d1;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">我的消息</h4>
+            </div>
+            <div class="card-body">
+                <div th:if="${#lists.isEmpty(contacts)}" class="contacts-empty">
+                    <i class="fas fa-comments"></i>
+                    <h4>暂无消息</h4>
+                    <p class="text-muted">成功匹配后，您可以在这里查看和发送消息</p>
+                    <a th:href="@{/match}" class="btn btn-primary mt-3">
+                        <i class="fas fa-heart"></i> 开始匹配
+                    </a>
+                </div>
+                
+                <div th:if="${not #lists.isEmpty(contacts)}" class="contacts-list">
+                    <div th:each="contact : ${contacts}" class="contact-item"
+                         th:classappend="${contact.user.id == activeUserId ? \"active\" : \"\"}"
+                         th:onclick="\"window.location.href=\"" + @{/message/chat/{id}(id=${contact.user.id})} + "\"\"">
+                        <img th:src="${contact.user.avatar != null ? contact.user.avatar : \"/images/default-avatar.png\"}" 
+                             class="contact-avatar" alt="头像">
+                        <div class="contact-info">
+                            <div class="contact-name" th:text="${contact.user.username}">用户名</div>
+                            <div class="contact-preview" th:text="${contact.lastMessage != null ? contact.lastMessage.content : \"暂无消息\"}">消息预览...</div>
+                        </div>
+                        <div class="contact-meta">
+                            <div class="contact-time" th:text="${contact.lastMessage != null ? #temporals.format(contact.lastMessage.createdAt, \"MM-dd HH:mm\") : \"\"}">05-01 14:30</div>
+                            <div class="unread-badge" th:if="${contact.unreadCount > 0}" th:text="${contact.unreadCount}">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

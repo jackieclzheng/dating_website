@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title th:text="${tag.id == null ? '添加标签' : '编辑标签'}">添加标签</title>
+    <style>
+        .tag-preview {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background-color: #f8f9fa;
+            margin-top: 15px;
+        }
+        .tag-preview i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0" th:text="${tag.id == null ? '添加标签' : '编辑标签'}">添加标签</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="${tag.id == null ? '/admin/tags' : '/admin/tags/update'}" 
+                      method="post" th:object="${tag}">
+                    
+                    <!-- 隐藏字段 -->
+                    <input type="hidden" th:if="${tag.id != null}" th:field="*{id}">
+                    
+                    <div class="form-group">
+                        <label for="category">所属类别</label>
+                        <select class="form-control" id="category" th:field="*{category.id}" required>
+                            <option value="">请选择类别</option>
+                            <option th:each="cat : ${categories}" 
+                                    th:value="${cat.id}" 
+                                    th:text="${cat.name}">类别名称</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="name">标签名称</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required
+                               maxlength="50" placeholder="请输入标签名称">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">标签描述</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" 
+                                  rows="3" maxlength="200" placeholder="请输入标签描述（可选）"></textarea>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="icon">标签图标</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i id="iconPreview" class="fas fa-tag"></i></span>
+                            </div>
+                            <input type="text" class="form-control" id="icon" th:field="*{icon}" 
+                                   placeholder="示例：fas fa-heart（使用Font Awesome图标）">
+                        </div>
+                        <small class="form-text text-muted">使用Font Awesome图标类名，如"fas fa-heart"</small>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('icon')}" th:errors="*{icon}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="defaultWeight">默认权重</label>
+                        <input type="number" class="form-control" id="defaultWeight" th:field="*{defaultWeight}" 
+                               step="0.1" min="0.1" max="2.0" required>
+                        <small class="form-text text-muted">设置标签在匹配算法中的默认权重（0.1-2.0）</small>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('defaultWeight')}" th:errors="*{defaultWeight}"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status">状态</label>
+                        <select class="form-control" id="status" th:field="*{status}" required>
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+                    </div>
+                    
+                    <!-- 标签预览 -->
+                    <div class="form-group">
+                        <label>标签预览</label>
+                        <div class="tag-preview">
+                            <i id="previewIcon" class="fas fa-tag"></i>
+                            <span id="previewName">标签名称</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group text-right">
+                        <a th:href="@{/admin/tags}" class="btn btn-secondary">取消</a>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 初始化图标预览
+                updateIconPreview();
+                updateNamePreview();
+                
+                // 图标变化时更新预览
+                $('#icon').on('input', function() {
+                    updateIconPreview();
+                });
+                
+                // 名称变化时更新预览
+                $('#name').on('input', function() {
+                    updateNamePreview();
+                });
+                
+                function updateIconPreview() {
+                    var iconClass = $('#icon').val();
+                    if (iconClass) {
+                        $('#iconPreview').attr('class', iconClass);
+                        $('#previewIcon').attr('class', iconClass);
+                    } else {
+                        $('#iconPreview').attr('class', 'fas fa-tag');
+                        $('#previewIcon').attr('class', 'fas fa-tag');
+                    }
+                }
+                
+                function updateNamePreview() {
+                    var name = $('#name').val();
+                    if (name) {
+                        $('#previewName').text(name);
+                    } else {
+                        $('#previewName').text('标签名称');
+                    }
+                }
+            });
+        </script>
+    </th:block>
+</body>
+</html>

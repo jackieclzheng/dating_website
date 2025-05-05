@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <title>管理仪表盘</title>
+    <style>
+        .card-stats {
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .card-stats .card-body {
+            padding: 20px;
+        }
+        .stats-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        .stats-icon.bg-primary {
+            background-color: #007bff;
+        }
+        .stats-icon.bg-success {
+            background-color: #28a745;
+        }
+        .stats-icon.bg-info {
+            background-color: #17a2b8;
+        }
+        .stats-icon.bg-warning {
+            background-color: #ffc107;
+        }
+        .stats-details {
+            flex: 1;
+            margin-left: 15px;
+        }
+        .stats-title {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+        .stats-description {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .chart-container {
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+        .chart-title {
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .activity-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+        .activity-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .activity-badge {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .badge-registration {
+            background-color: #007bff;
+        }
+        .badge-match {
+            background-color: #28a745;
+        }
+        .badge-login {
+            background-color: #17a2b8;
+        }
+        .badge-message {
+            background-color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">管理仪表盘</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">分享</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">导出</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <i class="fas fa-calendar-alt"></i> 本周
+                </button>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon bg-primary">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stats-details">
+                            <div class="stats-title">总用户数</div>
+                            <h3 class="stats-value" th:text="${stats.totalUsers}">1,234</h3>
+                            <p class="stats-description mb-0">较上周 <span class="text-success">+5%</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon bg-success">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="stats-details">
+                            <div class="stats-title">今日新增</div>
+                            <h3 class="stats-value" th:text="${stats.todayNewUsers}">56</h3>
+                            <p class="stats-description mb-0">较昨日 <span class="text-danger">-2%</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon bg-info">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="stats-details">
+                            <div class="stats-title">今日匹配成功</div>
+                            <h3 class="stats-value" th:text="${stats.todayMatches}">128</h3>
+                            <p class="stats-description mb-0">较昨日 <span class="text-success">+10%</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card card-stats">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="stats-icon bg-warning">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <div class="stats-details">
+                            <div class="stats-title">待处理举报</div>
+                            <h3 class="stats-value" th:text="${stats.pendingReports}">15</h3>
+                            <p class="stats-description mb-0">请尽快处理</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <h5 class="chart-title">用户增长趋势 (近7日)</h5>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <h5 class="chart-title">用户性别分布</h5>
+                    <canvas id="genderDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近活动 -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">最近活动</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="activity-list">
+                            <div th:each="activity : ${recentActivities}" class="activity-item px-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge" 
+                                              th:classappend="${activity.type == \"REGISTRATION\" ? \"badge-registration\" : 
+                                                              (activity.type == \"MATCH\" ? \"badge-match\" : 
+                                                              (activity.type == \"LOGIN\" ? \"badge-login\" : \"badge-message\"))}"></span>
+                                        <span th:text="${activity.description}">活动描述</span>
+                                    </div>
+                                    <span class="activity-time" th:text="${#temporals.format(activity.timestamp, \"HH:mm:ss\")}">10:30:15</span>
+                                </div>
+                            </div>
+                            <div th:if="${#lists.isEmpty(recentActivities)}" class="text-center text-muted py-3">
+                                暂无最近活动
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 用户增长图表
+                var userGrowthCtx = document.getElementById(\"userGrowthChart\").getContext(\"2d\");
+                var userGrowthChart = new Chart(userGrowthCtx, {
+                    type: \"line\",
+                    data: {
+                        labels: [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\", \"周六\", \"周日\"], // 示例数据
+                        datasets: [{
+                            label: \"新增用户\",
+                            data: [12, 19, 3, 5, 2, 3, 10], // 示例数据
+                            borderColor: \"#007bff\",
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // 性别分布图表
+                var genderCtx = document.getElementById(\"genderDistributionChart\").getContext(\"2d\");
+                var genderChart = new Chart(genderCtx, {
+                    type: \"doughnut\",
+                    data: {
+                        labels: [\"男性\", \"女性\", \"其他\"], // 示例数据
+                        datasets: [{
+                            label: \"用户性别分布\",
+                            data: [300, 250, 50], // 示例数据
+                            backgroundColor: [
+                                \"#007bff\",
+                                \"#dc3545\",
+                                \"#6c757d\"
+                            ],
+                            hoverOffset: 4
+                        }]
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html>
+
+ class="row">
+            <div class="col-xl-3 col-lg-6">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stats-details">
+                                <div class="stats-title">用户总数</div>
+                                <h5 class="stats-value" th:text="${userCount}">1,258</h5>
+                                <div class="stats-description">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span th:text="${userGrowth} + \"% 比上周\"">12% 比上周</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-lg-6">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="stats-details">
+                                <div class="stats-title">匹配数</div>
+                                <h5 class="stats-value" th:text="${matchCount}">268</h5>
+                                <div class="stats-description">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span th:text="${matchGrowth} + \"% 比上周\"">8% 比上周</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-lg-6">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stats-details">
+                                <div class="stats-title">消息数</div>
+                                <h5 class="stats-value" th:text="${messageCount}">5,287</h5>
+                                <div class="stats-description">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span th:text="${messageGrowth} + \"% 比上周\"">15% 比上周</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-3 col-lg-6">
+                <div class="card card-stats">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="stats-details">
+                                <div class="stats-title">标签数</div>
+                                <h5 class="stats-value" th:text="${tagCount}">324</h5>
+                                <div class="stats-description">
+                                    <i class="fas fa-arrow-up text-success"></i>
+                                    <span th:text="${tagGrowth} + \"% 比上月\"">3% 比上月</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表 -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="chart-container">
+                    <h5 class="chart-title">用户注册趋势</h5>
+                    <canvas id="userRegistrationChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="chart-container">
+                    <h5 class="chart-title">匹配成功率</h5>
+                    <canvas id="matchRateChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <h5 class="chart-title">热门标签</h5>
+                    <canvas id="popularTagsChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <h5 class="chart-title">用户活跃度</h5>
+                    <canvas id="userActivityChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 最近活动和报告 -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">最近活动</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-registration"></span>
+                                        <strong>新用户注册</strong> - 张三注册了账号
+                                    </div>
+                                    <div class="activity-time">5分钟前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-match"></span>
+                                        <strong>匹配成功</strong> - 李四与王五成功匹配
+                                    </div>
+                                    <div class="activity-time">15分钟前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-login"></span>
+                                        <strong>用户登录</strong> - 赵六登录了系统
+                                    </div>
+                                    <div class="activity-time">30分钟前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-message"></span>
+                                        <strong>新消息</strong> - 钱七发送了5条新消息
+                                    </div>
+                                    <div class="activity-time">45分钟前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-registration"></span>
+                                        <strong>资料更新</strong> - 孙八更新了个人资料
+                                    </div>
+                                    <div class="activity-time">1小时前</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <span class="activity-badge badge-match"></span>
+                                        <strong>匹配成功</strong> - 周九与吴十成功匹配
+                                    </div>
+                                    <div class="activity-time">2小时前</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">待处理事项</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-flag text-danger"></i>
+                                    用户举报待处理
+                                </div>
+                                <span class="badge badge-danger badge-pill">3</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-user-check text-warning"></i>
+                                    用户认证申请
+                                </div>
+                                <span class="badge badge-warning badge-pill">5</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-image text-info"></i>
+                                    照片审核
+                                </div>
+                                <span class="badge badge-info badge-pill">12</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-tag text-primary"></i>
+                                    新标签申请
+                                </div>
+                                <span class="badge badge-primary badge-pill">7</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas fa-question-circle text-secondary"></i>
+                                    用户咨询
+                                </div>
+                                <span class="badge badge-secondary badge-pill">8</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">系统通知</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning mb-3">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            系统将于今晚22:00-23:00进行维护更新，请做好相关准备。
+                        </div>
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle"></i>
+                            标签匹配算法v2.5已经上线，请关注匹配准确率反馈。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 用户注册趋势图表
+                var userRegistrationCtx = document.getElementById(\"userRegistrationChart\").getContext(\"2d\");
+                var userRegistrationChart = new Chart(userRegistrationCtx, {
+                    type: \"line\",
+                    data: {
+                        labels: [\"1月\", \"2月\", \"3月\", \"4月\", \"5月\", \"6月\", \"7月\"],
+                        datasets: [{
+                            label: \"2025年注册用户\",
+                            data: [65, 78, 90, 115, 135, 157, 180],
+                            borderColor: \"#007bff\",
+                            backgroundColor: \"rgba(0, 123, 255, 0.1)\",
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: \"2024年注册用户\",
+                            data: [45, 59, 72, 95, 110, 130, 145],
+                            borderColor: \"#6c757d\",
+                            backgroundColor: \"rgba(108, 117, 125, 0.1)\",
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: \"top\",
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // 匹配成功率图表
+                var matchRateCtx = document.getElementById(\"matchRateChart\").getContext(\"2d\");
+                var matchRateChart = new Chart(matchRateCtx, {
+                    type: \"doughnut\",
+                    data: {
+                        labels: [\"匹配成功\", \"待接受\", \"已拒绝\"],
+                        datasets: [{
+                            data: [65, 25, 10],
+                            backgroundColor: [
+                                \"#28a745\",
+                                \"#ffc107\",
+                                \"#dc3545\"
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: \"bottom\"
+                            }
+                        }
+                    }
+                });
+                
+                // 热门标签图表
+                var popularTagsCtx = document.getElementById(\"popularTagsChart\").getContext(\"2d\");
+                var popularTagsChart = new Chart(popularTagsCtx, {
+                    type: \"bar\",
+                    data: {
+                        labels: [\"爱旅行\", \"音乐\", \"美食\", \"电影\", \"阅读\", \"运动\", \"摄影\", \"宠物\"],
+                        datasets: [{
+                            label: \"使用次数\",
+                            data: [320, 285, 260, 245, 230, 210, 180, 160],
+                            backgroundColor: \"#17a2b8\"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // 用户活跃度图表
+                var userActivityCtx = document.getElementById(\"userActivityChart\").getContext(\"2d\");
+                var userActivityChart = new Chart(userActivityCtx, {
+                    type: \"radar\",
+                    data: {
+                        labels: [\"登录频率\", \"资料完善度\", \"匹配次数\", \"消息发送\", \"标签使用\", \"活跃时长\"],
+                        datasets: [{
+                            label: \"平均用户活跃度\",
+                            data: [75, 85, 60, 70, 80, 65],
+                            fill: true,
+                            backgroundColor: \"rgba(255, 193, 7, 0.2)\",
+                            borderColor: \"#ffc107\",
+                            pointBackgroundColor: \"#ffc107\",
+                            pointBorderColor: \"#fff\",
+                            pointHoverBackgroundColor: \"#fff\",
+                            pointHoverBorderColor: \"#ffc107\"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        elements: {
+                            line: {
+                                borderWidth: 3
+                            }
+                        },
+                        scales: {
+                            r: {
+                                angleLines: { display: false },
+                                suggestedMin: 0,
+                                suggestedMax: 100
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    </th:block>
+</body>
+</html>

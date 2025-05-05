@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <footer th:fragment="footer" class="py-4 bg-light mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 缘分天空 - 让爱相遇更容易</p>
+            <p class="mb-0 text-muted">湖北文理学院 - 毕业设计项目</p>
+        </div>
+
+        <!-- 引入JavaScript -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script th:src="@{/js/main.js}"></script>
+    </footer>
+</body>
+</html>

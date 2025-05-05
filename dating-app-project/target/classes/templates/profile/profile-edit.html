@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+<head>
+    <title>编辑个人资料</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">编辑个人资料</h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/user/profile/update}" method="post" th:object="${userDTO}">
+                            <div class="form-group">
+                                <label for="email">电子邮箱</label>
+                                <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("email")}" th:errors="*{email}"></small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">手机号码</label>
+                                <input type="text" class="form-control" id="phone" th:field="*{phone}">
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("phone")}" th:errors="*{phone}"></small>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="birthday">出生日期</label>
+                                    <input type="date" class="form-control" id="birthday" th:field="*{birthday}" required>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("birthday")}" th:errors="*{birthday}"></small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="gender">性别</label>
+                                    <select class="form-control" id="gender" th:field="*{gender}" required>
+                                        <option value="">请选择</option>
+                                        <option value="male">男</option>
+                                        <option value="female">女</option>
+                                    </select>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("gender")}" th:errors="*{gender}"></small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="height">身高（cm）</label>
+                                    <input type="number" class="form-control" id="height" th:field="*{height}" min="140" max="220">
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("height")}" th:errors="*{height}"></small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="location">所在地区</label>
+                                    <input type="text" class="form-control" id="location" th:field="*{location}">
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("location")}" th:errors="*{location}"></small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="education">最高学历</label>
+                                    <select class="form-control" id="education" th:field="*{education}">
+                                        <option value="">请选择</option>
+                                        <option value="high_school">高中</option>
+                                        <option value="college">大专</option>
+                                        <option value="bachelor">本科</option>
+                                        <option value="master">硕士</option>
+                                        <option value="phd">博士</option>
+                                    </select>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("education")}" th:errors="*{education}"></small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="occupation">职业</label>
+                                    <input type="text" class="form-control" id="occupation" th:field="*{occupation}">
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("occupation")}" th:errors="*{occupation}"></small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="maritalStatus">婚姻状况</label>
+                                    <select class="form-control" id="maritalStatus" th:field="*{maritalStatus}">
+                                        <option value="">请选择</option>
+                                        <option value="single">未婚</option>
+                                        <option value="divorced">离婚</option>
+                                        <option value="widowed">丧偶</option>
+                                    </select>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("maritalStatus")}" th:errors="*{maritalStatus}"></small>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="hasChildren">有无子女</label>
+                                    <select class="form-control" id="hasChildren" th:field="*{hasChildren}">
+                                        <option value="">请选择</option>
+                                        <option value="true">有</option>
+                                        <option value="false">无</option>
+                                    </select>
+                                    <small class="form-text text-danger" th:if="${#fields.hasErrors("hasChildren")}" th:errors="*{hasChildren}"></small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="bio">个人简介</label>
+                                <textarea class="form-control" id="bio" th:field="*{bio}" rows="4" maxlength="200"></textarea>
+                                <small class="form-text text-muted text-right"><span id="bio-count">0</span> / 200</small>
+                                <small class="form-text text-danger" th:if="${#fields.hasErrors("bio")}" th:errors="*{bio}"></small>
+                            </div>
+                            
+                            <div class="text-right">
+                                <a th:href="@{/user/profile}" class="btn btn-secondary">取消</a>
+                                <button type="submit" class="btn btn-primary">保存修改</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="scripts">
+        <script>
+            $(document).ready(function() {
+                // 字符计数
+                $("#bio").on("input", function() {
+                    var length = $(this).val().length;
+                    $("#bio-count").text(length);
+                });
+                
+                // 初始化字符计数
+                $("#bio-count").text($("#bio").val().length);
+            });
+        </script>
+    </th:block>
+</body>
+</html>
