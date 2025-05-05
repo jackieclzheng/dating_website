@@ -30,6 +30,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            nativeQuery = true)
     List<Message> findLatestMessages(@Param("userId") Long userId);
 
+    // 修改这两个方法，分别查询发送者和接收者
     @Query("SELECT DISTINCT m.sender FROM Message m WHERE m.receiver.id = :userId")
     List<Object> findSendersByReceiverId(@Param("userId") Long userId);
 
