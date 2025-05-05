@@ -24,9 +24,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .antMatchers("/", "/login", "/register").permitAll()
                 .anyRequest().authenticated()
             .and()
-            .httpBasic();
+            .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
+            .and()
+            .logout()
+                .logoutSuccessUrl("/login?logout")
+                .permitAll();
         
         // 允许H2控制台框架页面
         http.headers().frameOptions().disable();
