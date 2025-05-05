@@ -1,66 +1,80 @@
 package com.yuanfentiankon.controller;
 
 import com.yuanfentiankon.model.entity.User;
-import com.yuanfentiankon.model.entity.Match;
-import com.yuanfentiankon.service.MatchService;
 import com.yuanfentiankon.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/match")
 public class MatchController {
-
-    @Autowired
-    private MatchService matchService;
-
     @Autowired
     private UserService userService;
 
-    // 匹配推荐页面
-    @GetMapping("/recommend")
-    public String recommend(Model model, Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        List<User> candidates = matchService.recommendCandidates(currentUser.getId());
-        model.addAttribute("candidates", candidates);
-        return "match/recommend";
-    }
-
-    // 查看某个用户的详细资料
-    @GetMapping("/profile/{userId}")
-    public String viewProfile(@PathVariable Long userId, Model model) {
-        User user = userService.findById(userId);
-        model.addAttribute("user", user);
-        return "match/profile";
-    }
-
-    // 喜欢某人
-    @PostMapping("/like")
-    public String like(@RequestParam Long targetUserId, Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        matchService.likeUser(currentUser.getId(), targetUserId);
-        return "redirect:/match/recommend";
-    }
-
-    // 不喜欢/跳过
-    @PostMapping("/skip")
-    public String skip(@RequestParam Long targetUserId, Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        matchService.skipUser(currentUser.getId(), targetUserId);
-        return "redirect:/match/recommend";
-    }
-
-    // 匹配成功列表
-    @GetMapping("/success")
-    public String matchSuccess(Model model, Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        List<Match> matches = matchService.findMatchesByUserId(currentUser.getId());
+    // 支持 /match?mode=card 和 /match?mode=list
+    @GetMapping("")
+    public String matchPage(@RequestParam(value = "mode", defaultValue = "card") String mode,
+                            Model model,
+                            Principal principal) {
+        // 获取当前用户（如未登录可用假数据）
+        List<Map<String, Object>> matches = new ArrayList<>();
+        Map<String, Object> user1 = new HashMap<>();
+        user1.put("user", Map.of(
+            "id", 1L,
+            "username", "小明",
+            "avatar", "/images/avatar1.png",
+            "age", 25,
+            "height", 175,
+            "location", "杭州",
+            "bio", "热爱运动，喜欢旅行，期待遇见有趣的你~",
+            "tags", List.of(
+                Map.of("tag", Map.of("name", "运动达人", "icon", "fas fa-basketball-ball")),
+                Map.of("tag", Map.of("name", "旅行", "icon", "fas fa-plane"))
+            )
+        ));
+        user1.put("score", 0.92);
+        Map<String, Object> user2 = new HashMap<>();
+        user2.put("user", Map.of(
+            "id", 2L,
+            "username", "小红",
+            "avatar", "/images/avatar2.png",
+            "age", 23,
+            "height", 165,
+            "location", "上海",
+            "bio", "猫系女孩，喜欢安静看书，也爱美食。",
+            "tags", List.of(
+                Map.of("tag", Map.of("name", "美食", "icon", "fas fa-utensils")),
+                Map.of("tag", Map.of("name", "文艺", "icon", "fas fa-book"))
+            )
+        ));
+        user2.put("score", 0.88);
+        Map<String, Object> user3 = new HashMap<>();
+        user3.put("user", Map.of(
+            "id", 3L,
+            "username", "小刚",
+            "avatar", "/images/avatar3.png",
+            "age", 28,
+            "height", 180,
+            "location", "北京",
+            "bio", "IT男，喜欢编程和健身，偶尔弹吉他。",
+            "tags", List.of(
+                Map.of("tag", Map.of("name", "程序员", "icon", "fas fa-laptop-code")),
+                Map.of("tag", Map.of("name", "健身", "icon", "fas fa-dumbbell"))
+            )
+        ));
+        user3.put("score", 0.85);
+        matches.add(user1);
+        matches.add(user2);
+        matches.add(user3);
         model.addAttribute("matches", matches);
-        return "match/success";
+        model.addAttribute("mode", mode);
+        return "index";
     }
-} 
+}

@@ -1,6 +1,7 @@
 package com.yuanfentiankon.service.impl;
 
 import com.yuanfentiankon.model.entity.Message;
+import com.yuanfentiankon.model.entity.User;
 import com.yuanfentiankon.repository.MessageRepository;
 import com.yuanfentiankon.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    public Set<User> findContactsByUserId(Long userId) {
+        return null;
+    }
+
+    @Override
     // public List<Object> findContactsByUserId(Long userId) {
     //     // 获取发送给我的联系人
     //     List<Object> senders = messageRepository.findSendersByReceiverId(userId);
@@ -56,7 +62,7 @@ public class MessageServiceImpl implements MessageService {
     //     return new ArrayList<>(contacts);
     // }
 
-    @Override
+//    @Override
     @Transactional
     public Message sendMessage(Message message) {
         // 设置消息为未读状态
@@ -65,13 +71,18 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    @Transactional
-    public void markAsRead(Long messageId) {
-        Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new RuntimeException("消息不存在"));
-        message.setRead(true);
-        messageRepository.save(message);
+    public Message markAsRead(Long messageId) {
+        return null;
     }
+
+//    @Override
+//    @Transactional
+//    public void markAsRead(Long messageId) {
+//        Message message = messageRepository.findById(messageId)
+//                .orElseThrow(() -> new RuntimeException("消息不存在"));
+//        message.setRead(true);
+//        messageRepository.save(message);
+//    }
 
     @Override
     @Transactional

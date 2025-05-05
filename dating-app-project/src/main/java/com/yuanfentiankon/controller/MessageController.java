@@ -39,10 +39,10 @@ public class MessageController {
         return ResponseEntity.ok(messageService.findLatestMessages(userId));
     }
 
-    @GetMapping("/contacts")
-    public ResponseEntity<List<Object>> getContacts(@RequestParam Long userId) {
-        return ResponseEntity.ok(messageService.findContactsByUserId(userId));
-    }
+//    @GetMapping("/contacts")
+//    public ResponseEntity<List<Object>> getContacts(@RequestParam Long userId) {
+//        return ResponseEntity.ok(messageService.findContactsByUserId(userId));
+//    }
 
     // 新增接口
     @PostMapping
