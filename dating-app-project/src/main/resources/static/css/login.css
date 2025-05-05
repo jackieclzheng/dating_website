@@ -1,0 +1,153 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Microsoft YaHei", Arial, sans-serif;
+    background: #fff;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.login-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+}
+
+.logo {
+    margin-bottom: 40px;
+    font-size: 28px;
+    color: #e94d6a;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.brand {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.login-form {
+    width: 320px;
+    background: #fff;
+    padding: 32px 32px 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(233,77,106,0.08);
+}
+
+.login-form h2 {
+    color: #e94d6a;
+    text-align: left;
+    margin-bottom: 24px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+    font-size: 15px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 15px;
+    background: #f7f8fa;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.form-group input:focus {
+    border: 1.5px solid #e94d6a;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px 0;
+    background: #e94d6a;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.btn-login:hover {
+    background: #d13b5b;
+}
+
+.register-link {
+    text-align: center;
+    margin-top: 18px;
+    color: #888;
+    font-size: 14px;
+}
+
+.register-link a {
+    color: #e94d6a;
+    text-decoration: none;
+    margin-left: 4px;
+}
+
+.login-right {
+    flex: 1;
+    background: linear-gradient(135deg, #f8b6c1 0%, #f7d1e0 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    position: relative;
+}
+
+.slogan {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.slogan h1 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.slogan p {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
+.desc {
+    text-align: center;
+    background: rgba(255,255,255,0.15);
+    padding: 24px 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(233,77,106,0.08);
+}
+
+.desc h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+    color: #fff;
+}
+
+.desc p {
+    font-size: 15px;
+    color: #fff;
+    opacity: 0.95;
+} 
