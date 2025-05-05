@@ -23,15 +23,16 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT COUNT(m) FROM Message m WHERE m.receiver.id = :userId AND m.read = false")
     Integer countUnreadMessages(@Param("userId") Long userId);
     
-    @Query("SELECT DISTINCT m.sender FROM Message m WHERE m.receiver.id = :userId " +
-           "UNION " +
-           "SELECT DISTINCT m.receiver FROM Message m WHERE m.sender.id = :userId")
-    List<Object> findContactsByUserId(@Param("userId") Long userId);
-    
     @Query(value = "SELECT m.* FROM message m " +
                   "WHERE ((m.sender_id = :userId AND m.receiver_id = c.contact_id) " +
                   "OR (m.sender_id = c.contact_id AND m.receiver_id = :userId)) " +
                   "ORDER BY m.created_at DESC LIMIT 1", 
            nativeQuery = true)
     List<Message> findLatestMessages(@Param("userId") Long userId);
+
+    @Query("SELECT DISTINCT m.sender FROM Message m WHERE m.receiver.id = :userId")
+    List<Object> findSendersByReceiverId(@Param("userId") Long userId);
+
+    @Query("SELECT DISTINCT m.receiver FROM Message m WHERE m.sender.id = :userId")
+    List<Object> findReceiversBySenderId(@Param("userId") Long userId);
 }
