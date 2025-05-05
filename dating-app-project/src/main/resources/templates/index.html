@@ -188,9 +188,8 @@
         <div th:if="${mode == 'card'}">
             <div class="match-cards" th:if="${not #lists.isEmpty(matches)}">
                 <div th:each="match, iterStat : ${matches}" 
-                     class="match-card" 
-                     th:classappend="${iterStat.index == 0 ? 'next' : (iterStat.index == 1 ? 'back' : '')}" 
-                     th:data-match-id="${match.user.id}">
+                     th:class="'match-card ' + (iterStat.index == 0 ? 'next' : (iterStat.index == 1 ? 'back' : ''))"
+                     th:attr="data-match-id=${match.user.id}">
                     
                     <img th:src="${match.user.avatar != null ? match.user.avatar : \"/images/default-avatar.png\"}" 
                          alt="头像" class="match-card-img">

@@ -175,27 +175,27 @@
         <!-- 模式切换 -->
         <div class="mode-switch">
             <div class="btn-group" role="group">
-                <a th:href="@{/match(mode=\"card\")}" class="btn btn-outline-primary" th:classappend="${mode == \"card\" ? \"active\" : \"\"}">
+                <a th:href="@{/match(mode='card')}" class="btn btn-outline-primary" th:classappend="${mode == 'card'} ? 'active'">
                     <i class="fas fa-layer-group"></i> 卡片模式
                 </a>
-                <a th:href="@{/match(mode=\"list\")}" class="btn btn-outline-primary" th:classappend="${mode == \"list\" ? \"active\" : \"\"}">
+                <a th:href="@{/match(mode='list')}" class="btn btn-outline-primary" th:classappend="${mode == 'list'} ? 'active'">
                     <i class="fas fa-list"></i> 列表模式
                 </a>
             </div>
         </div>
 
         <!-- 卡片模式 -->
-        <div th:if="${mode == \"card\"}">
+        <div th:if="${mode == 'card'}">
             <div class="match-cards" th:if="${not #lists.isEmpty(matches)}">
                 <div th:each="match, iterStat : ${matches}" 
                      class="match-card" 
-                     th:classappend="${iterStat.index == 0 ? \"next\" : (iterStat.index == 1 ? \"back\" : \"\")}" 
+                     th:classappend="${iterStat.index == 0 ? 'next' : (iterStat.index == 1 ? 'back' : '')}" 
                      th:data-match-id="${match.user.id}">
                     
-                    <img th:src="${match.user.avatar != null ? match.user.avatar : \"/images/default-avatar.png\"}" 
+                    <img th:src="${match.user.avatar != null ? match.user.avatar : '/images/default-avatar.png'}" 
                          alt="头像" class="match-card-img">
                     
-                    <div class="match-card-score" th:text="${#numbers.formatDecimal(match.score * 100, 0, 0)} + \"分\"">90分</div>
+                    <div class="match-card-score" th:text="${#numbers.formatDecimal(match.score * 100, 0, 0)} + '分'">90分</div>
                     
                     <div class="match-card-content">
                         <h3 class="match-card-name" th:text="${match.user.username}">用户名</h3>
@@ -204,17 +204,17 @@
                                 <i class="fas fa-map-marker-alt"></i> <span th:text="${match.user.location}">地点</span>
                             </span>
                             <span class="match-card-age" th:if="${match.user.age}">
-                                <i class="fas fa-birthday-cake"></i> <span th:text="${match.user.age} + \"岁\"">年龄</span>
+                                <i class="fas fa-birthday-cake"></i> <span th:text="${match.user.age} + '岁'">年龄</span>
                             </span>
                             <span class="match-card-height" th:if="${match.user.height}">
-                                <i class="fas fa-ruler-vertical"></i> <span th:text="${match.user.height} + \"cm\"">身高</span>
+                                <i class="fas fa-ruler-vertical"></i> <span th:text="${match.user.height} + 'cm'">身高</span>
                             </span>
                         </div>
-                        <p th:text="${match.user.bio != null ? match.user.bio : \"这个人很懒，什么都没写...\"}">简介</p>
+                        <p th:text="${match.user.bio != null ? match.user.bio : '这个人很懒，什么都没写...'}">简介</p>
                         
                         <div class="match-card-tags" th:if="${not #lists.isEmpty(match.user.tags)}">
                             <span th:each="userTag : ${match.user.tags}" class="match-card-tag">
-                                <i th:class="${userTag.tag.icon != null ? userTag.tag.icon : \"fas fa-tag\"}"></i>
+                                <i th:class="${userTag.tag.icon != null ? userTag.tag.icon : 'fas fa-tag'}"></i>
                                 <span th:text="${userTag.tag.name}">标签</span>
                             </span>
                         </div>
@@ -243,7 +243,7 @@
         </div>
 
         <!-- 列表模式 -->
-        <div th:if="${mode == \"list\"}">
+        <div th:if="${mode == 'list'}">
             <div th:if="${#lists.isEmpty(matches)}" class="text-center py-5">
                 <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
                 <h4>暂时没有更多推荐了</h4>
@@ -253,27 +253,27 @@
             
             <div th:if="${not #lists.isEmpty(matches)}">
                 <div th:each="match : ${matches}" class="match-list-item">
-                    <img th:src="${match.user.avatar != null ? match.user.avatar : \"/images/default-avatar.png\"}" 
+                    <img th:src="${match.user.avatar != null ? match.user.avatar : '/images/default-avatar.png'}" 
                          alt="头像" class="match-list-img">
                     <div class="match-list-content">
                         <h5 th:text="${match.user.username}">用户名</h5>
                         <p class="text-muted mb-1">
                             <span th:if="${match.user.location}" th:text="${match.user.location}">地点</span>
-                            <span th:if="${match.user.age}">, <span th:text="${match.user.age} + \"岁\"">年龄</span></span>
-                            <span th:if="${match.user.height}">, <span th:text="${match.user.height} + \"cm\"">身高</span></span>
+                            <span th:if="${match.user.age}">, <span th:text="${match.user.age} + '岁'">年龄</span></span>
+                            <span th:if="${match.user.height}">, <span th:text="${match.user.height} + 'cm'">身高</span></span>
                         </p>
-                        <p class="mb-2" th:text="${match.user.bio != null ? #strings.abbreviate(match.user.bio, 50) : \"这个人很懒，什么都没写...\"}">简介</p>
+                        <p class="mb-2" th:text="${match.user.bio != null ? #strings.abbreviate(match.user.bio, 50) : '这个人很懒，什么都没写...'}">简介</p>
                         <div class="match-card-tags" th:if="${not #lists.isEmpty(match.user.tags)}">
                             <span th:each="userTag : ${match.user.tags}" class="match-card-tag">
-                                <i th:class="${userTag.tag.icon != null ? userTag.tag.icon : \"fas fa-tag\"}"></i>
+                                <i th:class="${userTag.tag.icon != null ? userTag.tag.icon : 'fas fa-tag'}"></i>
                                 <span th:text="${userTag.tag.name}">标签</span>
                             </span>
                         </div>
                         <div class="match-list-actions">
-                            <button class="btn btn-sm btn-outline-danger" th:onclick="|recordAction(${match.user.id}, \"dislike\")|">
+                            <button class="btn btn-sm btn-outline-danger" th:onclick="|recordAction(${match.user.id}, 'dislike')|">
                                 <i class="fas fa-times"></i> 不喜欢
                             </button>
-                            <button class="btn btn-sm btn-outline-success" th:onclick="|recordAction(${match.user.id}, \"like\")|">
+                            <button class="btn btn-sm btn-outline-success" th:onclick="|recordAction(${match.user.id}, 'like')|">
                                 <i class="fas fa-heart"></i> 喜欢
                             </button>
                             <a th:href="@{/user/view/{id}(id=${match.user.id})}" class="btn btn-sm btn-outline-info">
@@ -454,319 +454,6 @@
                      actions.style.display = "none";
                  }
             }
-        </script>
-    </th:block>
-</body>
-</html>
-
-                classappend="${mode == \"card\" ? \"active\" : \"\"}">
-                    <i class="fas fa-id-card"></i> 卡片模式
-                </a>
-                <a th:href="@{/match(mode=\"list\")}" class="btn btn-outline-primary"
-                   th:classappend="${mode == \"list\" ? \"active\" : \"\"}">
-                    <i class="fas fa-list"></i> 列表模式
-                </a>
-            </div>
-        </div>
-        
-        <!-- 卡片模式 -->
-        <div th:if="${mode == \"card\"}" class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <!-- 卡片容器 -->
-                <div class="match-cards" th:if="${not #lists.isEmpty(recommendedUsers)}">
-                    <div th:each="user, stat : ${recommendedUsers}" 
-                         class="match-card" 
-                         th:classappend="${stat.index == 0 ? \"next\" : (stat.index == 1 ? \"back\" : \"\")}"
-                         th:data-user-id="${user.user.id}">
-                        <div class="match-card-score">
-                            <i class="fas fa-percentage"></i> 
-                            <span th:text="${#numbers.formatDecimal(user.matchScore * 100, 0, 0)} + \"%\"">85%</span>
-                        </div>
-                        <img th:src="${user.user.avatar != null ? user.user.avatar : \"/images/default-avatar.png\"}" 
-                             class="match-card-img" alt="用户照片">
-                        <div class="match-card-content">
-                            <div class="match-card-name" th:text="${user.user.username}">用户名</div>
-                            <div class="match-card-info">
-                                <div class="match-card-age">
-                                    <i class="fas fa-birthday-cake"></i>
-                                    <span th:text="${user.user.age != null ? user.user.age + \"岁\" : \"年龄未知\"}">25岁</span>
-                                </div>
-                                <div class="match-card-height">
-                                    <i class="fas fa-ruler-vertical"></i>
-                                    <span th:text="${user.user.height != null ? user.user.height + \"cm\" : \"身高未知\"}">175cm</span>
-                                </div>
-                            </div>
-                            <div class="match-card-location">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span th:text="${user.user.location != null ? user.user.location : \"地区未知\"}">北京</span>
-                            </div>
-                            <div class="match-card-tags">
-                                <div th:each="tag : ${user.commonTags}" class="match-card-tag">
-                                    <i class="fas fa-check"></i> 
-                                    <span th:text="${tag.tag.name}">标签</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 无推荐用户时显示 -->
-                <div class="match-cards-empty" th:if="${#lists.isEmpty(recommendedUsers)}">
-                    <i class="fas fa-search"></i>
-                    <h4>今日推荐已经看完啦</h4>
-                    <p class="text-muted">我们正在努力为您寻找更多匹配的人</p>
-                    <a th:href="@{/user/preferences/edit}" class="btn btn-outline-primary mt-3">
-                        <i class="fas fa-cog"></i> 调整匹配偏好
-                    </a>
-                </div>
-                
-                <!-- 卡片操作按钮 -->
-                <div class="match-card-actions" th:if="${not #lists.isEmpty(recommendedUsers)}">
-                    <div class="match-action-btn dislike-btn" id="dislikeBtn">
-                        <i class="fas fa-times fa-2x"></i>
-                    </div>
-                    <div class="match-action-btn superlike-btn" id="superlikeBtn">
-                        <i class="fas fa-star fa-2x"></i>
-                    </div>
-                    <div class="match-action-btn like-btn" id="likeBtn">
-                        <i class="fas fa-heart fa-2x"></i>
-                    </div>
-                </div>
-                
-                <!-- 分页 -->
-                <div class="text-center mt-4" th:if="${not #lists.isEmpty(recommendedUsers)}">
-                    <a th:href="@{/match(mode=\"card\", page=${currentPage + 1})}" 
-                       class="btn btn-outline-primary" 
-                       th:if="${hasMore}">
-                        <i class="fas fa-sync-alt"></i> 加载更多
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 列表模式 -->
-        <div th:if="${mode == \"list\"}" class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">推荐匹配</h5>
-                        <div>
-                            <a th:href="@{/user/preferences/edit}" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-cog"></i> 匹配设置
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div th:if="${#lists.isEmpty(recommendedUsers)}" class="text-center py-5">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h4>暂无推荐用户</h4>
-                            <p class="text-muted">尝试调整您的匹配偏好设置</p>
-                            <a th:href="@{/user/preferences/edit}" class="btn btn-outline-primary mt-3">
-                                <i class="fas fa-cog"></i> 调整匹配偏好
-                            </a>
-                        </div>
-                        
-                        <div th:if="${not #lists.isEmpty(recommendedUsers)}">
-                            <div th:each="user : ${recommendedUsers}" class="match-list-item">
-                                <img th:src="${user.user.avatar != null ? user.user.avatar : \"/images/default-avatar.png\"}" 
-                                     class="match-list-img" alt="用户照片">
-                                <div class="match-list-content">
-                                    <div class="d-flex justify-content-between">
-                                        <h5 class="mb-0" th:text="${user.user.username}">用户名</h5>
-                                        <div class="badge badge-primary">
-                                            <i class="fas fa-percentage"></i> 
-                                            <span th:text="${#numbers.formatDecimal(user.matchScore * 100, 0, 0)} + \"%\"">85%</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="d-flex mb-2">
-                                        <div class="mr-3">
-                                            <i class="fas fa-birthday-cake text-muted"></i>
-                                            <span th:text="${user.user.age != null ? user.user.age + \"岁\" : \"年龄未知\"}">25岁</span>
-                                        </div>
-                                        <div class="mr-3">
-                                            <i class="fas fa-ruler-vertical text-muted"></i>
-                                            <span th:text="${user.user.height != null ? user.user.height + \"cm\" : \"身高未知\"}">175cm</span>
-                                        </div>
-                                        <div>
-                                            <i class="fas fa-map-marker-alt text-muted"></i>
-                                            <span th:text="${user.user.location != null ? user.user.location : \"地区未知\"}">北京</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div>
-                                        <span th:each="tag : ${user.commonTags}" class="badge badge-light mr-1 mb-1">
-                                            <i class="fas fa-tag small"></i> 
-                                            <span th:text="${tag.tag.name}">标签</span>
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="match-list-actions">
-                                        <button class="btn btn-sm btn-outline-danger match-action" 
-                                                th:data-user-id="${user.user.id}" data-action="DISLIKE">
-                                            <i class="fas fa-times"></i> 不感兴趣
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-primary match-action" 
-                                                th:data-user-id="${user.user.id}" data-action="SUPERLIKE">
-                                            <i class="fas fa-star"></i> 超级喜欢
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-success match-action" 
-                                                th:data-user-id="${user.user.id}" data-action="LIKE">
-                                            <i class="fas fa-heart"></i> 喜欢
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- 分页 -->
-                            <div class="text-center mt-4">
-                                <a th:href="@{/match(mode=\"list\", page=${currentPage + 1})}" 
-                                   class="btn btn-outline-primary" 
-                                   th:if="${hasMore}">
-                                    <i class="fas fa-sync-alt"></i> 加载更多
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 匹配成功模态框 -->
-        <div class="modal fade" id="matchSuccessModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-body text-center py-4">
-                        <div class="mb-4">
-                            <div class="d-inline-block position-relative">
-                                <img id="userAvatar" src="" alt="您的头像" class="rounded-circle" width="100" height="100"
-                                     style="border: 3px solid #28a745; object-fit: cover;">
-                                <div class="position-absolute" style="bottom: -10px; right: -10px; background-color: #28a745; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                            </div>
-                            <div class="d-inline-block position-relative mx-2">
-                                <img id="matchAvatar" src="" alt="匹配用户头像" class="rounded-circle" width="100" height="100"
-                                     style="border: 3px solid #007bff; object-fit: cover;">
-                                <div class="position-absolute" style="bottom: -10px; right: -10px; background-color: #007bff; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
-                                    <i class="fas fa-heart"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <h4 class="mb-3">恭喜！这是一场成功的匹配</h4>
-                        <p class="mb-4">您与 <span id="matchName"></span> 相互喜欢，现在可以开始聊天了！</p>
-                        
-                        <button type="button" class="btn btn-outline-secondary mr-2" data-dismiss="modal">稍后再说</button>
-                        <a href="#" id="startChatBtn" class="btn btn-primary">立即开始聊天</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <th:block layout:fragment="scripts">
-        <script>
-            $(document).ready(function() {
-                // 当前用户头像
-                var currentUserAvatar = \"/images/default-avatar.png\"; // 默认头像
-                
-                // 卡片滑动功能
-                if ($(\".match-card\").length > 0) {
-                    // 喜欢按钮点击事件
-                    $(\"#likeBtn\").click(function() {
-                        likeCurrentUser(\"LIKE\");
-                    });
-                    
-                    // 不喜欢按钮点击事件
-                    $(\"#dislikeBtn\").click(function() {
-                        likeCurrentUser(\"DISLIKE\");
-                    });
-                    
-                    // 超级喜欢按钮点击事件
-                    $(\"#superlikeBtn\").click(function() {
-                        likeCurrentUser(\"SUPERLIKE\");
-                    });
-                }
-                
-                // 列表模式操作按钮事件
-                $(\".match-action\").click(function() {
-                    var userId = $(this).data(\"user-id\");
-                    var action = $(this).data(\"action\");
-                    
-                    handleMatchAction(userId, action, $(this).closest(\".match-list-item\"));
-                });
-                
-                // 处理当前卡片的喜欢/不喜欢操作
-                function likeCurrentUser(action) {
-                    var currentCard = $(\".match-card.next\");
-                    var userId = currentCard.data(\"user-id\");
-                    
-                    if (action === \"LIKE\") {
-                        currentCard.addClass(\"swiped-right\");
-                    } else if (action === \"DISLIKE\") {
-                        currentCard.addClass(\"swiped-left\");
-                    } else {
-                        currentCard.addClass(\"swiped-right\");
-                    }
-                    
-                    // 处理下一张卡片
-                    setTimeout(function() {
-                        currentCard.remove();
-                        $(\".match-card\").first().addClass(\"next\");
-                        $(\".match-card\").eq(1).addClass(\"back\");
-                        
-                        // 如果没有更多卡片，显示空状态
-                        if ($(\".match-card\").length === 0) {
-                            $(\".match-cards\").html(\"<div class=\"match-cards-empty\">" +
-                                \"<i class=\"fas fa-search\"></i>" +
-                                \"<h4>今日推荐已经看完啦</h4>" +
-                                \"<p class=\"text-muted\">我们正在努力为您寻找更多匹配的人</p>" +
-                                \"<a href=\"/user/preferences/edit\" class=\"btn btn-outline-primary mt-3\">" +
-                                \"<i class=\"fas fa-cog\"></i> 调整匹配偏好</a>" +
-                                \"</div>\");
-                            $(\".match-card-actions\").hide();
-                        }
-                    }, 300);
-                    
-                    // 发送匹配操作到服务器
-                    handleMatchAction(userId, action);
-                }
-                
-                // 处理匹配操作
-                function handleMatchAction(userId, action, listItem) {
-                    $.ajax({
-                        url: \"/match/action\",
-                        type: \"POST\",
-                        data: {
-                            targetId: userId,
-                            action: action
-                        },
-                        success: function(response) {
-                            if (response.success) {
-                                // 如果匹配成功，显示匹配成功模态框
-                                if (response.matched && response.matchInfo) {
-                                    $(\"#userAvatar\").attr(\"src\", currentUserAvatar);
-                                    $(\"#matchAvatar\").attr(\"src\", response.matchInfo.avatar);
-                                    $(\"#matchName\").text(response.matchInfo.username);
-                                    $(\"#startChatBtn\").attr(\"href\", \"/message/chat/\" + response.matchInfo.userId);
-                                    $(\"#matchSuccessModal\").modal(\"show\");
-                                }
-                                
-                                // 如果是列表模式，移除该项
-                                if (listItem) {
-                                    listItem.fadeOut(300, function() { $(this).remove(); });
-                                }
-                            } else {
-                                alert(\"操作失败: \" + response.message);
-                            }
-                        },
-                        error: function() {
-                            alert(\"网络错误，请稍后重试\");
-                        }
-                    });
-                }
-            });
         </script>
     </th:block>
 </body>
