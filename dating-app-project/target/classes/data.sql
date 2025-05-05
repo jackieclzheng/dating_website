@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id BIGINT NOT NULL,
     receiver_id BIGINT NOT NULL,
     content TEXT NOT NULL,
-    read BOOLEAN DEFAULT FALSE,
+    `read` BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)
@@ -54,11 +54,11 @@ INSERT INTO users (username, password, email, gender, age, bio, location) VALUES
 ('user3', '$2a$10$rDkPvvAFV6GgJjXpYWxqUOQZxXxXxXxXxXxXxXxXxXxXxXxXxXx', 'user3@example.com', 'MALE', 28, '喜欢美食和电影', '广州');
 
 -- 插入消息
-INSERT INTO messages (sender_id, receiver_id, content) VALUES
-(1, 2, '你好，很高兴认识你！'),
-(2, 1, '你好，我也很高兴认识你！'),
-(1, 3, '最近在忙什么呢？'),
-(3, 1, '在准备一个项目，你呢？');
+INSERT INTO messages (sender_id, receiver_id, content, `read`) VALUES
+(1, 2, '你好，很高兴认识你！', FALSE),
+(2, 1, '你好，我也很高兴认识你！', FALSE),
+(1, 3, '最近在忙什么呢？', FALSE),
+(3, 1, '在准备一个项目，你呢？', FALSE);
 
 -- 插入用户关系
 INSERT INTO user_relationships (user_id, target_user_id, relationship_type) VALUES
