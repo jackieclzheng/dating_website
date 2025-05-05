@@ -175,21 +175,21 @@
         <!-- 模式切换 -->
         <div class="mode-switch">
             <div class="btn-group" role="group">
-                <a th:href="@{/match(mode=\"card\")}" class="btn btn-outline-primary" th:classappend="${mode == \"card\" ? \"active\" : \"\"}">
+                <a th:href="@{/match(mode='card')}" class="btn btn-outline-primary" th:classappend="${mode == 'card'} ? 'active'">
                     <i class="fas fa-layer-group"></i> 卡片模式
                 </a>
-                <a th:href="@{/match(mode=\"list\")}" class="btn btn-outline-primary" th:classappend="${mode == \"list\" ? \"active\" : \"\"}">
+                <a th:href="@{/match(mode='list')}" class="btn btn-outline-primary" th:classappend="${mode == 'list'} ? 'active'">
                     <i class="fas fa-list"></i> 列表模式
                 </a>
             </div>
         </div>
 
         <!-- 卡片模式 -->
-        <div th:if="${mode == \"card\"}">
+        <div th:if="${mode == 'card'}">
             <div class="match-cards" th:if="${not #lists.isEmpty(matches)}">
                 <div th:each="match, iterStat : ${matches}" 
                      class="match-card" 
-                     th:classappend="${iterStat.index == 0 ? \"next\" : (iterStat.index == 1 ? \"back\" : \"\")}" 
+                     th:classappend="${iterStat.index == 0 ? 'next' : (iterStat.index == 1 ? 'back' : '')}" 
                      th:data-match-id="${match.user.id}">
                     
                     <img th:src="${match.user.avatar != null ? match.user.avatar : \"/images/default-avatar.png\"}" 
@@ -230,20 +230,20 @@
             </div>
             
             <div class="match-card-actions" th:if="${not #lists.isEmpty(matches)}">
-                <button class="match-action-btn dislike-btn" onclick="swipe(\"left\")">
+                <button class="match-action-btn dislike-btn" onclick="swipe('left')">
                     <i class="fas fa-times fa-2x"></i>
                 </button>
-                <button class="match-action-btn superlike-btn" onclick="swipe(\"super\")">
+                <button class="match-action-btn superlike-btn" onclick="swipe('super')">
                     <i class="fas fa-star fa-2x"></i>
                 </button>
-                <button class="match-action-btn like-btn" onclick="swipe(\"right\")">
+                <button class="match-action-btn like-btn" onclick="swipe('right')">
                     <i class="fas fa-heart fa-2x"></i>
                 </button>
             </div>
         </div>
 
         <!-- 列表模式 -->
-        <div th:if="${mode == \"list\"}">
+        <div th:if="${mode == 'list'}">
             <div th:if="${#lists.isEmpty(matches)}" class="text-center py-5">
                 <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
                 <h4>暂时没有更多推荐了</h4>
@@ -270,10 +270,10 @@
                             </span>
                         </div>
                         <div class="match-list-actions">
-                            <button class="btn btn-sm btn-outline-danger" th:onclick="|recordAction(${match.user.id}, \"dislike\")|">
+                            <button class="btn btn-sm btn-outline-danger" th:onclick="|recordAction(${match.user.id}, 'dislike')|">
                                 <i class="fas fa-times"></i> 不喜欢
                             </button>
-                            <button class="btn btn-sm btn-outline-success" th:onclick="|recordAction(${match.user.id}, \"like\")|">
+                            <button class="btn btn-sm btn-outline-success" th:onclick="|recordAction(${match.user.id}, 'like')|">
                                 <i class="fas fa-heart"></i> 喜欢
                             </button>
                             <a th:href="@{/user/view/{id}(id=${match.user.id})}" class="btn btn-sm btn-outline-info">
