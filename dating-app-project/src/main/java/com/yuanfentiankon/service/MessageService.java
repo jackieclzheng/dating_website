@@ -1,10 +1,12 @@
 package com.yuanfentiankon.service;
 
 import com.yuanfentiankon.model.entity.Message;
+import com.yuanfentiankon.model.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public interface MessageService {
     /**
@@ -28,9 +30,10 @@ public interface MessageService {
     List<Message> findLatestMessages(Long userId);
 
     /**
-     * 查询用户的所有联系人
+     * 查询用户的所有联系人（包括发送者和接收者）
+     * @return 联系人集合
      */
-    List<Object> findContactsByUserId(Long userId);
+    Set<User> findContactsByUserId(Long userId);
 
     /**
      * 发送消息
@@ -40,7 +43,7 @@ public interface MessageService {
     /**
      * 标记消息为已读
      */
-    void markAsRead(Long messageId);
+    Message markAsRead(Long messageId);
 
     /**
      * 删除消息
