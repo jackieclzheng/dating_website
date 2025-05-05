@@ -31,4 +31,20 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/ 
+.vscode/
+
+# 忽略所有.class文件
+*.class
+
+# 忽略编译输出目录
+/target/
+/build/
+
+# 忽略IDE相关文件
+.idea/
+*.iml
+*.log
+.DS_Store
+
+# 忽略操作系统生成的临时文件
+Thumbs.db 
