@@ -5,6 +5,11 @@
 <head>
     <title>匹配推荐</title>
     <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f0ff 100%);
+            min-height: 100vh;
+            font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+        }
         .match-cards {
             position: relative;
             height: 460px;
@@ -120,26 +125,84 @@
             background-color: #f8f9fa;
             color: #007bff;
         }
+        .mode-switch {
+            margin: 40px 0 30px 0;
+            text-align: center;
+        }
+        .mode-switch .btn-group {
+            display: inline-flex;
+            box-shadow: 0 4px 16px rgba(0,123,255,0.08);
+            border-radius: 30px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .mode-switch .btn {
+            padding: 12px 36px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            background: none;
+            color: #007bff;
+            transition: background 0.2s, color 0.2s;
+        }
+        .mode-switch .btn.active, .mode-switch .btn:hover {
+            background: #007bff;
+            color: #fff;
+        }
         .match-cards-empty {
             width: 100%;
-            height: 460px;
+            max-width: 420px;
+            min-height: 340px;
+            margin: 60px auto 0 auto;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: #f8f9fa;
-            border-radius: 10px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e3f0ff 100%);
+            border-radius: 22px;
             text-align: center;
-            padding: 20px;
+            padding: 48px 32px 40px 32px;
+            box-shadow: 0 8px 32px rgba(0,123,255,0.10);
         }
         .match-cards-empty i {
-            font-size: 3rem;
-            color: #d1d1d1;
-            margin-bottom: 20px;
+            font-size: 4rem;
+            color: #b3d8ff;
+            margin-bottom: 30px;
         }
-        .mode-switch {
-            margin-bottom: 20px;
-            text-align: center;
+        .match-cards-empty h4 {
+            color: #222;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .match-cards-empty p {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 28px;
+        }
+        .match-cards-empty a.btn {
+            background: #007bff;
+            color: #fff;
+            border-radius: 20px;
+            padding: 10px 32px;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.10);
+            transition: background 0.2s;
+        }
+        .match-cards-empty a.btn:hover {
+            background: #0056b3;
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .match-cards-empty {
+                max-width: 98vw;
+                padding: 32px 8px 24px 8px;
+            }
+            .mode-switch .btn {
+                padding: 10px 12px;
+                font-size: 1rem;
+            }
         }
         .match-list-item {
             display: flex;
@@ -225,7 +288,7 @@
                 <i class="fas fa-heart-broken"></i>
                 <h4>暂时没有更多推荐了</h4>
                 <p>试试调整您的匹配偏好，或者稍后再来看看吧！</p>
-                <a th:href="@{/user/preferences/edit}" class="btn btn-primary">调整匹配偏好</a>
+                <a th:href="@{/user/preferences/edit}" class="btn">调整匹配偏好</a>
             </div>
             
             <div class="match-card-actions" th:if="${not #lists.isEmpty(matches)}">
