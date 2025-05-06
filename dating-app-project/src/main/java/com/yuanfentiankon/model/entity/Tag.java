@@ -1,36 +1,35 @@
-package com.yuanfentiankon.model.entity;
+// package com.yuanfentiankon.model.entity;
 
-import lombok.Data;
+// import javax.persistence.*;
+// import lombok.Data;
 
-import javax.persistence.*;
+// @Data
+// @Entity
+// @Table(name = "tags")
+// public class Tag {
+    
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     private Long id;
 
-@Entity
-@Table(name = "tags")
-@Data
-public class Tag {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private TagCategory category;
-    
-    @Column(nullable = false, length = 50)
-    private String name;
-    
-    @Column(length = 200)
-    private String description;
-    
-    @Column(length = 100)
-    private String icon;
-    
-    @Column(nullable = false)
-    private Float defaultWeight;
-    
-    @Column(nullable = false)
-    private Integer useCount;
-    
-    @Column(nullable = false)
-    private Integer status;
-}
+//     @Column(nullable = false, unique = true)
+//     private String name;
+
+//     @Column(nullable = false)
+//     private String icon;
+
+//     @Column(length = 500)
+//     private String description;
+
+//     @Column(name = "category")
+//     private String category;  // 标签分类：兴趣/性格/职业等
+
+//     @Column(name = "sort_order")
+//     private Integer sortOrder;  // 排序权重
+
+//     @Column(name = "is_active")
+//     private Boolean isActive = true;  // 是否启用
+
+//     @Column(name = "use_count")
+//     private Integer useCount = 0;
+// }

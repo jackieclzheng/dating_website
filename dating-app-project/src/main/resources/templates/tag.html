@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标签管理 - 幸福牵手</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 类别展开/收起功能
+            const categoryHeaders = document.querySelectorAll('.category-header');
+            categoryHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const categoryBody = this.nextElementSibling;
+                    categoryBody.classList.toggle('active');
+                });
+            });
+
+            // 默认打开第一个类别
+            document.querySelector('.category-body').classList.add('active');
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="admin-header">
+            <h1 class="admin-title">标签管理系统</h1>
+            <div class="admin-actions">
+                <a href="index.html" class="btn">返回首页</a>
+            </div>
+        </header>
+
+        <main class="admin-container">
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3>标签搜索</h3>
+                </div>
+                <div class="admin-card-body">
+                    <div class="tag-search">
+                        <input type="text" placeholder="输入关键词搜索标签...">
+                    </div>
+                    <div class="tag-list">
+                        <div class="tag-item">
+                            <span class="tag-name">运动健身</span>
+                            <span class="tag-weight">0.8</span>
+                            <div class="tag-actions">
+                                <button title="编辑">✏️</button>
+                                <button title="删除">❌</button>
+                            </div>
+                        </div>
+                        <div class="tag-item">
+                            <span class="tag-name">阅读</span>
+                            <span class="tag-weight">0.7</span>
+                            <div class="tag-actions">
+                                <button title="编辑">✏️</button>
+                                <button title="删除">❌</button>
+                            </div>
+                        </div>
+                        <div class="tag-item">
+                            <span class="tag-name">旅行</span>
+                            <span class="tag-weight">0.9</span>
+                            <div class="tag-actions">
+                                <button title="编辑">✏️</button>
+                                <button title="删除">❌</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3>标签类别管理</h3>
+                    <button class="btn">添加类别</button>
+                </div>
+                <div class="admin-card-body">
+                    <div class="tag-categories">
+                        <div class="tag-category">
+                            <div class="category-header">
+                                <h4>兴趣爱好</h4>
+                                <div class="category-actions">
+                                    <button title="编辑">✏️</button>
+                                    <button title="删除">❌</button>
+                                </div>
+                            </div>
+                            <div class="category-body">
+                                <div class="tag-list">
+                                    <div class="tag-item">
+                                        <span class="tag-name">旅行</span>
+                                        <span class="tag-weight">0.9</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">电影</span>
+                                        <span class="tag-weight">0.8</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">音乐</span>
+                                        <span class="tag-weight">0.7</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">美食</span>
+                                        <span class="tag-weight">0.8</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">阅读</span>
+                                        <span class="tag-weight">0.7</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tag-form">
+                                    <input type="text" placeholder="添加新标签...">
+                                    <button>添加</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tag-category">
+                            <div class="category-header">
+                                <h4>性格特质</h4>
+                                <div class="category-actions">
+                                    <button title="编辑">✏️</button>
+                                    <button title="删除">❌</button>
+                                </div>
+                            </div>
+                            <div class="category-body">
+                                <div class="tag-list">
+                                    <div class="tag-item">
+                                        <span class="tag-name">开朗</span>
+                                        <span class="tag-weight">0.8</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">温柔</span>
+                                        <span class="tag-weight">0.9</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">幽默</span>
+                                        <span class="tag-weight">0.7</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">细心</span>
+                                        <span class="tag-weight">0.8</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">责任感</span>
+                                        <span class="tag-weight">0.9</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tag-form">
+                                    <input type="text" placeholder="添加新标签...">
+                                    <button>添加</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tag-category">
+                            <div class="category-header">
+                                <h4>生活方式</h4>
+                                <div class="category-actions">
+                                    <button title="编辑">✏️</button>
+                                    <button title="删除">❌</button>
+                                </div>
+                            </div>
+                            <div class="category-body">
+                                <div class="tag-list">
+                                    <div class="tag-item">
+                                        <span class="tag-name">早睡早起</span>
+                                        <span class="tag-weight">0.7</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">宅家达人</span>
+                                        <span class="tag-weight">0.6</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">社交达人</span>
+                                        <span class="tag-weight">0.8</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                    <div class="tag-item">
+                                        <span class="tag-name">养生爱好者</span>
+                                        <span class="tag-weight">0.7</span>
+                                        <div class="tag-actions">
+                                            <button title="编辑">✏️</button>
+                                            <button title="删除">❌</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tag-form">
+                                    <input type="text" placeholder="添加新标签...">
+                                    <button>添加</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3>添加新标签类别</h3>
+                </div>
+                <div class="admin-card-body">
+                    <form>
+                        <div class="form-row">
+                            <label for="category-name">类别名称</label>
+                            <input type="text" id="category-name" placeholder="输入新类别名称">
+                        </div>
+                        <div class="form-row">
+                            <label for="category-desc">类别描述</label>
+                            <textarea id="category-desc" placeholder="输入类别描述..."></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label for="category-order">排序顺序</label>
+                            <input type="number" id="category-order" min="1" value="1">
+                        </div>
+                        <div class="form-row">
+                            <label for="category-status">状态</label>
+                            <select id="category-status">
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">取消</button>
+                            <button type="submit" class="save-btn">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3>标签统计</h3>
+                </div>
+                <div class="admin-card-body">
+                    <div class="statistics">
+                        <div class="stat-item">
+                            <h3>128</h3>
+                            <p>总标签数</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>12</h3>
+                            <p>标签类别</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>86%</h3>
+                            <p>标签使用率</p>
+                        </div>
+                    </div>
+                    <div class="popular-tags">
+                        <h4>热门标签 TOP 5</h4>
+                        <ol>
+                            <li>旅行 - 使用次数：1286</li>
+                            <li>电影 - 使用次数：1142</li>
+                            <li>美食 - 使用次数：986</li>
+                            <li>运动健身 - 使用次数：875</li>
+                            <li>音乐 - 使用次数：823</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div class="copyright">
+                <p>&copy; 2025 幸福牵手 - 婚恋交友平台. 保留所有权利.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

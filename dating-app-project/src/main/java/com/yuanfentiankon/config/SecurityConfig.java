@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import com.yuanfentiankon.service.impl.MyUserDetailsService;
 
 @Configuration
@@ -21,6 +23,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+    
+    @Bean
+    public AuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler successHandler = new SavedRequestAwareAuthenticationSuccessHandler();
+        successHandler.setDefaultTargetUrl("/"); // 如果没有记住的请求，默认跳转到首页
+        return successHandler;
     }
     
     @Override
@@ -36,17 +45,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/")
+                .successHandler(savedRequestAwareAuthenticationSuccessHandler()) // 使用SavedRequestAwareAuthenticationSuccessHandler
                 .permitAll()
             .and()
             .logout()
                 .logoutSuccessUrl("/login?logout")
                 .permitAll();
-        
+                
         // 允许H2控制台框架页面
         http.headers().frameOptions().disable();
     }
-
+    
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(myUserDetailsService).passwordEncoder(passwordEncoder());
